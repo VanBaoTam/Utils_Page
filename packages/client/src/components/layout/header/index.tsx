@@ -1,7 +1,16 @@
-import { Box } from "../mui-component";
+import { Box, Button } from "../mui-component";
+import NavBar from "./navbar";
 function Header() {
   return (
-    <Box sx={{ width: "100%", height: "3rem", bgcolor: "red" }}>Header</Box>
+    <Box
+      sx={{
+        width: "100%",
+        borderBottom: "2px solid #ddd",
+        display: "flex",
+      }}
+    >
+      <NavBar />
+    </Box>
   );
 }
 

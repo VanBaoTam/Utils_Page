@@ -1,7 +1,13 @@
 body::-webkit-scrollbar {
       display: none;
     }
-    body {
+body {
       -ms-overflow-style: none;  
       scrollbar-width: none;  
+    }
+th,td{
+      border-collapse: collapse;
+    }
+    *{
+      box-sizing: border-box;
     }

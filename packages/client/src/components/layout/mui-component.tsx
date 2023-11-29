@@ -9,7 +9,6 @@ export { default as CssBaseline } from "@mui/material/CssBaseline";
 export { default as Dialog } from "@mui/material/Dialog";
 export { default as DialogTitle } from "@mui/material/DialogTitle";
 export { default as Divider } from "@mui/material/Divider";
-export { default as Drawer } from "@mui/material/Drawer";
 export { default as FormControl } from "@mui/material/FormControl";
 export { default as FormLabel } from "@mui/material/FormLabel";
 export { default as Grid } from "@mui/material/Grid";
@@ -35,5 +34,9 @@ export { default as Tabs } from "@mui/material/Tabs";
 export { default as TextField } from "@mui/material/TextField";
 export { default as Toolbar } from "@mui/material/Toolbar";
 export { default as Typography } from "@mui/material/Typography";
-
+export { default as FormControlLabel } from "@mui/material/FormControlLabel";
+export { default as FormGroup } from "@mui/material/FormGroup";
+export { default as Menu } from "@mui/material/Menu";
+export { default as Switch } from "@mui/material/Switch";
+export { default as Drawer } from "@mui/material/Drawer";
 //------------------------------------
