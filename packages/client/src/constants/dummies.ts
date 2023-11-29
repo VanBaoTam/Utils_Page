@@ -1,63 +1,50 @@
-export enum EUserStatus {
-  active = "activated",
-  deactivated = "deactivated",
-}
-export enum ETasksStatus {
-  active = "activated",
-  suspensed = "suspended",
-  finished = "finished",
-  expired = "expired",
-}
-export enum ETimerStatus {
-  repeat_once = "once",
-  repeat_many = "5m 3t",
-  always = "always",
-}
-export interface Iuser {
-  id: number;
-  username: string;
-  password: string;
-  name: string;
-  email: string;
-  status: EUserStatus;
-}
-export type TTask = {
-  id: number;
-  user_id: number;
-  created_date: Date;
-  started_date: Date;
-  noting_date: Date;
-  finished_date: Date;
-  status: ETasksStatus;
-  description: string;
-};
-export type TNote = {
-  id: number;
-  user_id: number;
-  name: Date;
-  content: string;
-  updated_date: Date;
-  status: number;
-};
-export type TCalendars = {
-  id: number;
-  user_id: number;
-  choosen_date: Date;
-  noting_time: Date;
-  notification: string;
-};
-export type TTimers = {
-  id: number;
-  user_id: number;
-  choosen_days: string[];
-  noting_time: Date;
-  repeater: ETimerStatus;
-  title: string;
-};
+import { ETasksStatus, TTask } from "@/types";
 
-// export interface template {
-//   id: number;
-// }
-// export type tempalte = {
-//   id: number;
-// };
+// TASKS
+const tasks: TTask[] = [
+  {
+    id: 1,
+    user_id: 1,
+    name: "TEST ACTIVE",
+    created_date: new Date("2023-11-29"),
+    started_date: new Date("2023-11-30"),
+    noting_date: new Date("2023-11-30"),
+    finished_date: new Date("2023-11-30"),
+    description: "TESTING",
+    status: ETasksStatus.active,
+  },
+  {
+    id: 2,
+    user_id: 1,
+    name: "TEST FINISH",
+    created_date: new Date("2023-11-10"),
+    started_date: new Date("2023-11-12"),
+    noting_date: new Date("2023-11-12"),
+    finished_date: new Date("2023-11-12"),
+    description: "TESTING FINISH",
+    status: ETasksStatus.finished,
+  },
+  {
+    id: 3,
+    user_id: 1,
+    name: "TEST EXPIRED",
+    created_date: new Date("2023-11-21"),
+    started_date: new Date("2023-11-22"),
+    noting_date: new Date("2023-11-23"),
+    finished_date: new Date("2023-11-23"),
+    description: "TESTING",
+    status: ETasksStatus.expired,
+  },
+  {
+    id: 4,
+    user_id: 1,
+    name: "TEST suspended",
+    created_date: new Date("2023-11-29"),
+    started_date: new Date("2023-11-30"),
+    noting_date: new Date("2023-11-30"),
+    finished_date: new Date("2023-11-30"),
+    description: "TESTINGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+    status: ETasksStatus.suspended,
+  },
+];
+export { tasks };

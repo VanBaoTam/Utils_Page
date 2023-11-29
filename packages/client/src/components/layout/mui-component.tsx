@@ -12,6 +12,7 @@ export { default as Divider } from "@mui/material/Divider";
 export { default as FormControl } from "@mui/material/FormControl";
 export { default as FormLabel } from "@mui/material/FormLabel";
 export { default as Grid } from "@mui/material/Grid";
+export { DataGrid } from "@mui/x-data-grid";
 export { default as IconButton } from "@mui/material/IconButton";
 export { default as InputLabel } from "@mui/material/InputLabel";
 export { default as Link } from "@mui/material/Link";
@@ -40,3 +41,4 @@ export { default as Menu } from "@mui/material/Menu";
 export { default as Switch } from "@mui/material/Switch";
 export { default as Drawer } from "@mui/material/Drawer";
 //------------------------------------
+export { makeStyles } from "@mui/styles";
