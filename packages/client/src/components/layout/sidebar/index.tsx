@@ -24,9 +24,15 @@ import { FiHelpCircle } from "react-icons/fi";
 import { AiFillSetting } from "react-icons/ai";
 import { RiLogoutCircleLine } from "react-icons/ri";
 import { ReactNode } from "react";
-import { sideBarItems, underSideBarItems } from "@/constants";
+import {
+  sideBarItems,
+  sideBarLinks,
+  underSideBarItems,
+  underSideBarLinks,
+} from "@/constants";
 import Logo from "@assets/Logo.png";
 import Footer from "../footer";
+import { Link } from "react-router-dom";
 const drawerWidth = 240;
 type MainLayoutProps = {
   children: ReactNode;
@@ -151,80 +157,112 @@ export default function SideBar({ children }: MainLayoutProps) {
         <Divider />
         <List>
           {sideBarItems.map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: "block" }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
+            <Link
+              to={sideBarLinks[index]}
+              key={text}
+              style={{ textDecoration: "none", color: "black" }}
+            >
+              <ListItem key={text} disablePadding sx={{ display: "block" }}>
+                <ListItemButton
                   sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : "auto",
-                    justifyContent: "center",
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
                   }}
                 >
-                  {(() => {
-                    switch (index) {
-                      case 0:
-                        return <FaTasks />;
-                      case 1:
-                        return <GrNotes />;
-                      case 2:
-                        return <MdTimer />;
-                      case 3:
-                        return <FaCalendarCheck />;
-                      default:
-                        return null;
-                    }
-                  })()}
-                </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {(() => {
+                      switch (index) {
+                        case 0:
+                          return <FaTasks />;
+                        case 1:
+                          return <GrNotes />;
+                        case 2:
+                          return <MdTimer />;
+                        case 3:
+                          return <FaCalendarCheck />;
+                        default:
+                          return null;
+                      }
+                    })()}
+                  </ListItemIcon>
+                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
+              </ListItem>
+            </Link>
           ))}
         </List>
         <Divider />
         <List>
           {underSideBarItems.map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: "block" }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
+            <Link
+              to={underSideBarLinks[index]}
+              key={text}
+              style={{ textDecoration: "none", color: "black" }}
+            >
+              <ListItem key={text} disablePadding sx={{ display: "block" }}>
+                <ListItemButton
                   sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : "auto",
-                    justifyContent: "center",
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
                   }}
                 >
-                  {(() => {
-                    switch (index) {
-                      case 0:
-                        return <FiHelpCircle />;
-                      case 1:
-                        return <AiFillSetting />;
-                      case 2:
-                        return <RiLogoutCircleLine />;
-                      default:
-                        return null;
-                    }
-                  })()}
-                </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {(() => {
+                      switch (index) {
+                        case 0:
+                          return <FiHelpCircle />;
+                        case 1:
+                          return <AiFillSetting />;
+                        case 2:
+                          return <RiLogoutCircleLine />;
+                        default:
+                          return null;
+                      }
+                    })()}
+                  </ListItemIcon>
+                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
+              </ListItem>
+            </Link>
           ))}
+          <ListItem disablePadding sx={{ display: "block" }}>
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? "initial" : "center",
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : "auto",
+                  justifyContent: "center",
+                }}
+              >
+                <RiLogoutCircleLine />;
+              </ListItemIcon>
+              <ListItemText primary={"Logout"} sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+          </ListItem>
         </List>
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        {children}
+      <Box component="main" sx={{ flexGrow: 1 }}>
+        <Box sx={{ height: "82vh", p: 3 }}> {children}</Box>
         <Footer />
       </Box>
     </Box>

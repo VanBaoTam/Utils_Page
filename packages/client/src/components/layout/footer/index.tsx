@@ -1,6 +1,6 @@
 import { Box } from "../mui-component";
 function Footer() {
-  return <Box sx={{ height: "3rem" }}>Footer</Box>;
+  return <Box sx={{ borderTop: "2px solid #ddd", height: "4rem" }}>Footer</Box>;
 }
 
 export default Footer;
