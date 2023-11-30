@@ -11,7 +11,8 @@ import Setting from "@pages/setting";
 import Help from "@pages/help";
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import Timers from "@pages/timers";
-
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 declare module "@mui/material/styles" {
   interface Theme {
     status: {
@@ -27,25 +28,27 @@ declare module "@mui/material/styles" {
 const theme = createTheme({});
 function App() {
   return (
-    <BrowserRouter>
-      <CssBaseline />
-      <ThemeProvider theme={theme}>
-        <MainLayout>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/tasks" element={<Tasks />}></Route>
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/notes" element={<Notes />} />
-            <Route path="/timers" element={<Timers />} />
-            <Route path="/calendars" element={<Calendars />} />
-            <Route path="/setting" element={<Setting />} />
-            <Route path="/help" element={<Help />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </MainLayout>
-      </ThemeProvider>
-    </BrowserRouter>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <BrowserRouter>
+        <CssBaseline />
+        <ThemeProvider theme={theme}>
+          <MainLayout>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/tasks" element={<Tasks />}></Route>
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/notes" element={<Notes />} />
+              <Route path="/timers" element={<Timers />} />
+              <Route path="/calendars" element={<Calendars />} />
+              <Route path="/setting" element={<Setting />} />
+              <Route path="/help" element={<Help />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </MainLayout>
+        </ThemeProvider>
+      </BrowserRouter>
+    </LocalizationProvider>
   );
 }
 
