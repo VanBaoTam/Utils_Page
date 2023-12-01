@@ -1,4 +1,4 @@
-import { ETasksStatus, TTask } from "@/types";
+import { ETasksStatus, TNote, TTask } from "@/types";
 
 // TASKS
 const tasks: TTask[] = [
@@ -47,4 +47,88 @@ const tasks: TTask[] = [
     status: ETasksStatus.suspended,
   },
 ];
-export { tasks };
+
+const notes: TNote[] = [
+  {
+    id: 1,
+    user_id: 1,
+    name: "NOTEPAD PHP",
+    updated_date: new Date(),
+    content: "TESTING",
+    status: 1,
+  },
+  {
+    id: 2,
+    user_id: 1,
+    name: "NOTEPAD HTML",
+    updated_date: new Date(),
+    content: "TESTING 2",
+    status: 1,
+  },
+  {
+    id: 1,
+    user_id: 1,
+    name: "NOTEPAD PHP",
+    updated_date: new Date(),
+    content: "TESTING",
+    status: 1,
+  },
+  {
+    id: 2,
+    user_id: 1,
+    name: "NOTEPAD HTML",
+    updated_date: new Date(),
+    content: "TESTING 2",
+    status: 1,
+  },
+  {
+    id: 1,
+    user_id: 1,
+    name: "NOTEPAD PHP",
+    updated_date: new Date(),
+    content: "TESTING",
+    status: 1,
+  },
+  {
+    id: 2,
+    user_id: 1,
+    name: "NOTEPAD HTML",
+    updated_date: new Date(),
+    content: "TESTING 2",
+    status: 1,
+  },
+  {
+    id: 1,
+    user_id: 1,
+    name: "NOTEPAD PHP",
+    updated_date: new Date(),
+    content: "TESTING",
+    status: 1,
+  },
+  {
+    id: 2,
+    user_id: 1,
+    name: "NOTEPAD HTML",
+    updated_date: new Date(),
+    content: "TESTING 2",
+    status: 1,
+  },
+  {
+    id: 1,
+    user_id: 1,
+    name: "NOTEPAD PHP",
+    updated_date: new Date(),
+    content: "TESTING",
+    status: 1,
+  },
+  {
+    id: 2,
+    user_id: 1,
+    name: "NOTEPAD HTML",
+    updated_date: new Date(),
+    content: "TESTING 2",
+    status: 1,
+  },
+];
+
+export { tasks, notes };

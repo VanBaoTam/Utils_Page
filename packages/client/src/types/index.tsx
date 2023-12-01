@@ -38,7 +38,7 @@ export type TTask = {
 export type TNote = {
   id: number;
   user_id: number;
-  name: Date;
+  name: string;
   content: string;
   updated_date: Date;
   status: number;
