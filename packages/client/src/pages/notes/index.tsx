@@ -62,7 +62,7 @@ function Notes() {
                 }}
               >
                 <Typography
-                  variant="h8"
+                  variant="inherit"
                   sx={{
                     fontWeight: "bold",
                     flexGrow: 1,
