@@ -58,6 +58,12 @@ export type TTimers = {
   repeater: ETimerStatus;
   title: string;
 };
+export type UpdatingFormProps = {
+  selectedId: number;
+  data: any[];
+  handleRefreshUpdating: () => void;
+};
+
 //COLS
 export const taskCols: GridColDef[] = [
   { field: "id", headerName: "ID", width: 90 },
@@ -65,7 +71,6 @@ export const taskCols: GridColDef[] = [
     field: "name",
     headerName: "Task name",
     width: 200,
-    editable: true,
   },
   {
     field: "started_date",
@@ -95,7 +100,6 @@ export const taskCols: GridColDef[] = [
   {
     field: "description",
     headerName: "Description",
-    editable: true,
     width: 350,
   },
   {

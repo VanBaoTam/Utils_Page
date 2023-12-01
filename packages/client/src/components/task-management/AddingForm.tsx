@@ -5,10 +5,12 @@ import { Button, TextField } from "@mui/material";
 import { MobileDateTimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { ETasksStatus } from "@/types";
+import { gbAboveLabel, gbSelectDropDown } from "@/constants";
 //-----------------------------------------
 interface TaskFormData {
   name: string;
   status: string;
+  description: string;
 }
 
 const minDateTime = dayjs().subtract(1, "minute");
@@ -76,8 +78,10 @@ function AddingForm(props: { handleCloseAdd: (props: any) => void }) {
               setFinishedDate(dayjs(value).format("YYYY-MM-DDTHH:mm:ss"));
             }}
           />
-          <FormControl margin="normal">
-            <InputLabel id="status-label">Status</InputLabel>
+          <FormControl margin="normal" sx={gbAboveLabel}>
+            <InputLabel id="status-label" sx={gbSelectDropDown}>
+              Status
+            </InputLabel>
             <Select
               labelId="status-label"
               id="status"
@@ -89,6 +93,12 @@ function AddingForm(props: { handleCloseAdd: (props: any) => void }) {
               <MenuItem value={ETasksStatus.finished}>Finished</MenuItem>
             </Select>
           </FormControl>
+          <TextField
+            label="Description"
+            {...register("description", { required: true })}
+            margin="normal"
+            sx={gbAboveLabel}
+          />
           <Button type="submit" variant="contained" color="primary">
             Submit
           </Button>
