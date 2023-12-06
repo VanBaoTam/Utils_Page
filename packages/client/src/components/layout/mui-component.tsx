@@ -41,7 +41,7 @@ export { default as Menu } from "@mui/material/Menu";
 export { default as Switch } from "@mui/material/Switch";
 export { default as Drawer } from "@mui/material/Drawer";
 export { default as Modal } from "@mui/material/Modal";
-export { MobileDateTimePicker } from "@mui/x-date-pickers";
+export { MobileDateTimePicker, MobileTimePicker } from "@mui/x-date-pickers";
 export { default as DialogContent } from "@mui/material/DialogContent";
 export { default as DialogActions } from "@mui/material/DialogActions";
 //------------------------------------

@@ -16,6 +16,15 @@ export enum ETimerStatus {
   repeat_many = "5m 3t",
   always = "always",
 }
+export enum ETimerDays {
+  monday = "Monday",
+  tuesday = "Tuesday",
+  wednesday = "Wednesday",
+  thursday = "Thursday",
+  friday = "Friday",
+  saturday = "Saturday",
+  sunday = "Sunday",
+}
 export interface Iuser {
   id: number;
   username: string;
@@ -50,11 +59,12 @@ export type TCalendars = {
   noting_time: Date;
   notification: string;
 };
+
 export type TTimers = {
   id: number;
   user_id: number;
   choosen_days: string[];
-  noting_time: Date;
+  noting_time: string;
   repeater: ETimerStatus;
   title: string;
 };

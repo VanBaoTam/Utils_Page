@@ -1,4 +1,11 @@
-import { ETasksStatus, TNote, TTask } from "@/types";
+import {
+  ETasksStatus,
+  ETimerDays,
+  ETimerStatus,
+  TNote,
+  TTask,
+  TTimers,
+} from "@/types";
 
 // TASKS
 const tasks: TTask[] = [
@@ -52,7 +59,7 @@ const notes: TNote[] = [
   {
     id: 1,
     user_id: 1,
-    name: "NOTEPAD PHP",
+    name: "For Works",
     updated_date: new Date(),
     content: "TESTING",
     status: 1,
@@ -60,75 +67,101 @@ const notes: TNote[] = [
   {
     id: 2,
     user_id: 1,
-    name: "NOTEPAD HTML",
+    name: "Thesis",
+    updated_date: new Date(),
+    content: "Thesis",
+    status: 1,
+  },
+  {
+    id: 3,
+    user_id: 1,
+    name: "Giáo trình ",
+    updated_date: new Date(),
+    content: "TESTING",
+    status: 1,
+  },
+  {
+    id: 4,
+    user_id: 1,
+    name: "Note báo cáo thứ 4",
     updated_date: new Date(),
     content: "TESTING 2",
     status: 1,
   },
   {
-    id: 1,
+    id: 5,
     user_id: 1,
-    name: "NOTEPAD PHP",
+    name: "checklist",
     updated_date: new Date(),
     content: "TESTING",
     status: 1,
   },
   {
-    id: 2,
+    id: 6,
     user_id: 1,
-    name: "NOTEPAD HTML",
+    name: "Planning",
     updated_date: new Date(),
     content: "TESTING 2",
     status: 1,
   },
   {
-    id: 1,
+    id: 7,
     user_id: 1,
-    name: "NOTEPAD PHP",
+    name: "Mobile 13/12/2023",
     updated_date: new Date(),
     content: "TESTING",
     status: 1,
   },
   {
-    id: 2,
+    id: 8,
     user_id: 1,
-    name: "NOTEPAD HTML",
+    name: "Debug task feature",
     updated_date: new Date(),
     content: "TESTING 2",
     status: 1,
   },
   {
-    id: 1,
+    id: 9,
     user_id: 1,
-    name: "NOTEPAD PHP",
+    name: "estimate",
     updated_date: new Date(),
     content: "TESTING",
     status: 1,
   },
   {
-    id: 2,
+    id: 10,
     user_id: 1,
-    name: "NOTEPAD HTML",
-    updated_date: new Date(),
-    content: "TESTING 2",
-    status: 1,
-  },
-  {
-    id: 1,
-    user_id: 1,
-    name: "NOTEPAD PHP",
-    updated_date: new Date(),
-    content: "TESTING",
-    status: 1,
-  },
-  {
-    id: 2,
-    user_id: 1,
-    name: "NOTEPAD HTML",
+    name: "Roadmap.sh",
     updated_date: new Date(),
     content: "TESTING 2",
     status: 1,
   },
 ];
+const timers: TTimers[] = [
+  {
+    id: 1,
+    user_id: 1,
+    title: "Weekly Online Meeting",
+    repeater: ETimerStatus.repeat_once,
+    noting_time: "10:30",
+    choosen_days: [ETimerDays.monday],
+  },
+  {
+    id: 2,
+    user_id: 1,
+    title: "Thesis",
+    repeater: ETimerStatus.repeat_many,
+    noting_time: "19:00",
+    choosen_days: [ETimerDays.monday, ETimerDays.wednesday, ETimerDays.friday],
+  },
+  {
+    id: 3,
+    user_id: 1,
+    title: "Study",
+    repeater: ETimerStatus.always,
+    noting_time: "15:00",
+    choosen_days: [ETimerDays.tuesday, ETimerDays.thursday],
+  },
+];
 
-export { tasks, notes };
+export { tasks, notes, timers };

@@ -2,7 +2,6 @@ import {
   Box,
   Button,
   Grid,
-  TextField,
   Typography,
 } from "@components/layout/mui-component";
 import { notes } from "@/constants";
@@ -59,6 +58,7 @@ function Notes() {
                   paddingBottom: 2,
                   paddingTop: 2,
                   overflow: "hidden",
+                  borderBottom: "2px solid gray",
                 }}
               >
                 <Typography
@@ -76,7 +76,13 @@ function Notes() {
                 </Typography>
                 <Button
                   variant="text"
-                  sx={{ bgcolor: "#D63214", color: "white" }}
+                  sx={{
+                    bgcolor: "#D63214",
+                    color: "white",
+                    "&:hover": {
+                      bgcolor: "tomato",
+                    },
+                  }}
                 >
                   Delete
                 </Button>
