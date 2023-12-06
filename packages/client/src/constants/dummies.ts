@@ -143,7 +143,7 @@ const timers: TTimers[] = [
     user_id: 1,
     title: "Weekly Online Meeting",
     repeater: ETimerStatus.repeat_once,
-    noting_time: "10:30",
+    noting_time: "7:32",
     choosen_days: [ETimerDays.monday],
   },
   {

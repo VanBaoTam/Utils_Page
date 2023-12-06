@@ -1,30 +1,43 @@
-import { timers } from "@/constants";
-import { TTimers } from "@/types";
+import { timers, DAYS } from "@/constants";
+import { ETimerStatus, TTimers } from "@/types";
 import {
   Box,
   Button,
+  FormControlLabel,
+  FormGroup,
   Grid,
   MobileTimePicker,
+  TextField,
   Typography,
 } from "@components/layout/mui-component";
+import { Checkbox, MenuItem, Select } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 function Timers() {
   const [timer, setTimer] = useState<TTimers>();
   const [notingTime, setNotingTime] = useState<Dayjs>(dayjs());
+  const [days, setDays] = useState<string[]>([]);
+  const handleDayToggle = (day: string) => {
+    setDays((prevDays) => {
+      if (prevDays.includes(day)) {
+        return prevDays.filter((selectedDay) => selectedDay !== day);
+      } else {
+        return [...prevDays, day];
+      }
+    });
+  };
+  const handleRepeaterChange = (event: any) => {
+    console.log(event.target.value);
+  };
 
   useEffect(() => {
     if (timer) {
       const convertedTime = dayjs(timer.noting_time, "HH:mm");
       setNotingTime(convertedTime);
+      setDays(timer.choosen_days);
     }
   }, [timer]);
-
-  useEffect(() => {
-    console.log(notingTime.format("HH:mm"));
-  }, [notingTime]);
-
   //------------------------------------
   return (
     <Grid container sx={{ height: "100%" }}>
@@ -114,17 +127,76 @@ function Timers() {
           ))}
         </Box>
       </Grid>
-      <Grid item xs={9} sx={{ height: "100%", p: 1 }}>
-        <Box sx={{ height: "100%" }}>
-          <MobileTimePicker
-            label="Noting Time"
-            value={notingTime.toDate()}
-            onChange={(value: Date | null, _context: any) => {
-              if (value) {
-                setNotingTime(dayjs(value));
-              }
-            }}
-          />
+      <Grid item xs={9} sx={{ height: "100%", p: 1, pl: 3 }}>
+        <Box sx={{ height: "100%", p: 2 }}>
+          {timer && (
+            <React.Fragment>
+              <Typography variant="h6">Selected Timer:</Typography>
+              <Box sx={{ py: 2 }}>
+                <TextField
+                  label="Title"
+                  variant="outlined"
+                  value={timer.title}
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                />
+              </Box>
+              <Box sx={{ py: 2 }}>
+                <Typography variant="body1" sx={{ pb: 1 }}>
+                  Choose Days
+                </Typography>
+                <FormGroup sx={{ display: "flex", flexDirection: "row" }}>
+                  {DAYS.map((day) => (
+                    <FormControlLabel
+                      key={day}
+                      control={
+                        <Checkbox
+                          checked={days.includes(day)}
+                          onChange={() => handleDayToggle(day)}
+                        />
+                      }
+                      label={day}
+                    />
+                  ))}
+                </FormGroup>
+              </Box>
+              <Box>
+                <Typography variant="body1" sx={{ pb: 1 }}>
+                  Choose Repeater
+                </Typography>
+                <Select
+                  label="Repeater"
+                  variant="outlined"
+                  value={timer.repeater}
+                  onChange={handleRepeaterChange}
+                  sx={{ marginLeft: 1 }}
+                >
+                  <MenuItem value={ETimerStatus.repeat_once}>
+                    Repeat Once
+                  </MenuItem>
+                  <MenuItem value={ETimerStatus.repeat_many}>
+                    Repeat Many
+                  </MenuItem>
+                  <MenuItem value={ETimerStatus.always}>Always</MenuItem>
+                </Select>
+              </Box>
+              <br />
+              <MobileTimePicker
+                sx={{ m: 1 }}
+                label="Noting Time"
+                value={notingTime as any}
+                onChange={(value: Date | null, _context: any) => {
+                  if (value) {
+                    setNotingTime(dayjs(value));
+                  }
+                }}
+              />
+              <Box sx={{ py: 2 }}>
+                <Button variant="contained">CONFIRM</Button>
+              </Box>
+            </React.Fragment>
+          )}
         </Box>
       </Grid>
     </Grid>

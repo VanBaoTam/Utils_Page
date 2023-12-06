@@ -101,7 +101,10 @@ function Notes() {
             }}
             onChange={handleTextareaChange}
             value={content}
-          />
+          />{" "}
+          <Box sx={{ py: 2 }}>
+            <Button variant="contained">SAVE</Button>
+          </Box>
         </Box>
       </Grid>
     </Grid>
