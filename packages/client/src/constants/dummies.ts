@@ -2,6 +2,7 @@ import {
   ETasksStatus,
   ETimerDays,
   ETimerStatus,
+  TCalendars,
   TNote,
   TTask,
   TTimers,
@@ -55,6 +56,7 @@ const tasks: TTask[] = [
   },
 ];
 
+//NOTE
 const notes: TNote[] = [
   {
     id: 1,
@@ -137,6 +139,7 @@ const notes: TNote[] = [
     status: 1,
   },
 ];
+//TIMER
 const timers: TTimers[] = [
   {
     id: 1,
@@ -161,6 +164,24 @@ const timers: TTimers[] = [
     repeater: ETimerStatus.always,
     noting_time: "15:00",
     choosen_days: [ETimerDays.tuesday, ETimerDays.thursday],
+  },
+];
+
+//CALENDARS
+const calendars: TCalendars[] = [
+  {
+    id: 1,
+    user_id: 1,
+    choosen_date: "2023-12-21",
+    noting_time: "8:00",
+    notification: "Reminder for works",
+  },
+  {
+    id: 2,
+    user_id: 1,
+    choosen_date: "2023-12-31",
+    noting_time: "10:00",
+    notification: "Cuoi nam",
   },
 ];
 

@@ -44,5 +44,6 @@ export { default as Modal } from "@mui/material/Modal";
 export { MobileDateTimePicker, MobileTimePicker } from "@mui/x-date-pickers";
 export { default as DialogContent } from "@mui/material/DialogContent";
 export { default as DialogActions } from "@mui/material/DialogActions";
+export { default as Checkbox } from "@mui/material/Checkbox";
 //------------------------------------
 export { makeStyles } from "@mui/styles";
