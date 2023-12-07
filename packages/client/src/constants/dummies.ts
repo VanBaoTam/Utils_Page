@@ -185,4 +185,4 @@ const calendars: TCalendars[] = [
   },
 ];
 
-export { tasks, notes, timers };
+export { tasks, notes, timers, calendars };

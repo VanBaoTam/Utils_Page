@@ -1,38 +1,30 @@
-import { TTimers } from "@/types";
+import { calendars } from "@/constants";
+import { TCalendars } from "@/types";
 import {
   Box,
   Button,
   Grid,
+  MobileDateTimePicker,
   Typography,
 } from "@components/layout/mui-component";
-import {} from "@mui/material";
+import { TextField } from "@mui/material";
 import dayjs, { Dayjs } from "dayjs";
 import React, { useEffect, useState } from "react";
 
 function Calendars() {
-  const [timer, setTimer] = useState<TTimers>();
+  const [calendar, setCalendar] = useState<TCalendars>();
   const [notingTime, setNotingTime] = useState<Dayjs>(dayjs());
-  const [days, setDays] = useState<string[]>([]);
-  const handleDayToggle = (day: string) => {
-    setDays((prevDays) => {
-      if (prevDays.includes(day)) {
-        return prevDays.filter((selectedDay) => selectedDay !== day);
-      } else {
-        return [...prevDays, day];
-      }
-    });
-  };
-  const handleRepeaterChange = (event: any) => {
-    console.log(event.target.value);
-  };
-
+  const [notification, setNotification] = useState<string>();
   useEffect(() => {
-    if (timer) {
-      const convertedTime = dayjs(timer.noting_time, "HH:mm");
-      setNotingTime(convertedTime);
-      setDays(timer.choosen_days);
+    if (calendar) {
+      setNotingTime(
+        dayjs(
+          calendar.choosen_date + "T" + calendar.noting_time,
+          "YYYY-MM-DDTHH:mm"
+        )
+      );
     }
-  }, [timer]);
+  }, [calendar]);
   //------------------------------------
   return (
     <Grid container sx={{ height: "100%" }}>
@@ -61,11 +53,11 @@ function Calendars() {
             height: "100%",
           }}
         >
-          {/* {timers.map((element) => (
+          {calendars.map((element) => (
             <Box
               key={element.id}
               onClick={() => {
-                setTimer(element);
+                setCalendar(element);
               }}
               sx={{
                 display: "flex",
@@ -90,7 +82,7 @@ function Calendars() {
                     whiteSpace: "nowrap",
                   }}
                 >
-                  {element.title}
+                  {dayjs(element.choosen_date).format("DD / MM / YYYY")}
                 </Typography>
                 <Typography
                   variant="inherit"
@@ -103,7 +95,19 @@ function Calendars() {
                     whiteSpace: "nowrap",
                   }}
                 >
-                  {element.noting_time}
+                  {"Noting time: " + element.noting_time}
+                </Typography>
+                <Typography
+                  variant="inherit"
+                  sx={{
+                    flexGrow: 1,
+                    display: "inline-block",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {element.notification}
                 </Typography>
               </Box>
               <Button
@@ -119,11 +123,43 @@ function Calendars() {
                 Delete
               </Button>
             </Box>
-          ))} */}
+          ))}
         </Box>
       </Grid>
       <Grid item xs={9} sx={{ height: "100%", p: 1, pl: 3 }}>
-        <Box sx={{ height: "100%", p: 2 }}></Box>
+        <Box sx={{ height: "100%", p: 2 }}>
+          {calendar && (
+            <React.Fragment>
+              <Typography variant="h6">Selected Timer:</Typography>
+              <br />
+              <MobileDateTimePicker
+                sx={{ m: 1 }}
+                label="Choosen Date Time:"
+                minDateTime={dayjs() as any}
+                value={notingTime as any}
+                onChange={(value: Date | null, _context: any) => {
+                  if (value) {
+                    setNotingTime(dayjs(value));
+                  }
+                }}
+              />
+              <Box sx={{ m: 1, py: 2 }}>
+                <TextField
+                  sx={{ minWidth: "32rem" }}
+                  label="Notification"
+                  variant="outlined"
+                  value={notification}
+                  onChange={(event) => {
+                    setNotification(event.target.value);
+                  }}
+                />
+              </Box>
+              <Box sx={{ m: 1, py: 2 }}>
+                <Button variant="contained">CONFIRM</Button>
+              </Box>
+            </React.Fragment>
+          )}
+        </Box>
       </Grid>
     </Grid>
   );

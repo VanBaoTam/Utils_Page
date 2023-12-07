@@ -20,6 +20,7 @@ function Timers() {
   const [timer, setTimer] = useState<TTimers>();
   const [notingTime, setNotingTime] = useState<Dayjs>(dayjs());
   const [days, setDays] = useState<string[]>([]);
+  const [title, setTitle] = useState<string>("");
   const handleDayToggle = (day: string) => {
     setDays((prevDays) => {
       if (prevDays.includes(day)) {
@@ -38,6 +39,7 @@ function Timers() {
       const convertedTime = dayjs(timer.noting_time, "HH:mm");
       setNotingTime(convertedTime);
       setDays(timer.choosen_days);
+      setTitle(timer.title);
     }
   }, [timer]);
   //------------------------------------
@@ -138,9 +140,9 @@ function Timers() {
                 <TextField
                   label="Title"
                   variant="outlined"
-                  value={timer.title}
-                  InputProps={{
-                    readOnly: true,
+                  value={title}
+                  onChange={(event) => {
+                    setTitle(event.target.value);
                   }}
                 />
               </Box>
