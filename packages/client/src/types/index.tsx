@@ -25,10 +25,18 @@ export enum ETimerDays {
   saturday = "Saturday",
   sunday = "Sunday",
 }
-export interface Iuser {
-  id: number;
+export interface ILogin {
   username: string;
   password: string;
+}
+
+export interface IUser {
+  id: number;
+  username: string;
+  isLogged: boolean;
+}
+export interface ISignUp extends IUser {
+  id: number;
   name: string;
   email: string;
   status: EUserStatus;

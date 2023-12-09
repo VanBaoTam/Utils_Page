@@ -14,7 +14,7 @@ import React, { useEffect, useState } from "react";
 function Calendars() {
   const [calendar, setCalendar] = useState<TCalendars>();
   const [notingTime, setNotingTime] = useState<Dayjs>(dayjs());
-  const [notification, setNotification] = useState<string>();
+  const [notification, setNotification] = useState<string>("Unknown");
   useEffect(() => {
     if (calendar) {
       setNotingTime(
@@ -23,6 +23,7 @@ function Calendars() {
           "YYYY-MM-DDTHH:mm"
         )
       );
+      setNotification(calendar.notification);
     }
   }, [calendar]);
   //------------------------------------

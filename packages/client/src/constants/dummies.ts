@@ -2,12 +2,18 @@ import {
   ETasksStatus,
   ETimerDays,
   ETimerStatus,
+  ILogin,
   TCalendars,
   TNote,
   TTask,
   TTimers,
 } from "@/types";
 
+// ACCOUNT
+const accountList: ILogin[] = [
+  { username: "", password: "" },
+  { username: "admin", password: "" },
+];
 // TASKS
 const tasks: TTask[] = [
   {
@@ -185,4 +191,4 @@ const calendars: TCalendars[] = [
   },
 ];
 
-export { tasks, notes, timers, calendars };
+export { accountList, tasks, notes, timers, calendars };
