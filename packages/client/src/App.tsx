@@ -14,6 +14,8 @@ import Timers from "@pages/timers";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Toast from "./components/layout/toast";
+import { Provider } from "react-redux";
+import { store } from "./Redux/store";
 declare module "@mui/material/styles" {
   interface Theme {
     status: {
@@ -33,22 +35,24 @@ function App() {
       <BrowserRouter>
         <CssBaseline />
         <Toast />
-        <ThemeProvider theme={theme}>
-          <MainLayout>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/tasks" element={<Tasks />}></Route>
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<SignUp />} />
-              <Route path="/notes" element={<Notes />} />
-              <Route path="/timers" element={<Timers />} />
-              <Route path="/calendars" element={<Calendars />} />
-              <Route path="/setting" element={<Setting />} />
-              <Route path="/help" element={<Help />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </MainLayout>
-        </ThemeProvider>
+        <Provider store={store}>
+          <ThemeProvider theme={theme}>
+            <MainLayout>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/tasks" element={<Tasks />}></Route>
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<SignUp />} />
+                <Route path="/notes" element={<Notes />} />
+                <Route path="/timers" element={<Timers />} />
+                <Route path="/calendars" element={<Calendars />} />
+                <Route path="/setting" element={<Setting />} />
+                <Route path="/help" element={<Help />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </MainLayout>
+          </ThemeProvider>
+        </Provider>
       </BrowserRouter>
     </LocalizationProvider>
   );

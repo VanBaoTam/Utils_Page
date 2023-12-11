@@ -1,6 +1,7 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+// accountSlice.ts
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ILogin, IUser } from "@/types";
-import { accountList } from "@/constants";
+
 const initialState: IUser = {
   id: 0,
   username: "",
@@ -12,26 +13,19 @@ const accountSlice = createSlice({
   initialState,
   reducers: {
     login: (state, action: PayloadAction<ILogin>) => {
-      const account = accountList.find(
-        (item) =>
-          item.username === action.payload.username &&
-          item.password === action.payload.password
-      );
-      if (account) {
-        state.username = account.username;
-        state.isLogged = true;
-      } else {
-        state.isLogged = false;
-      }
+      state.username = action.payload.username;
+      state.isLogged = true;
     },
     refreshLogin: (state) => {
       state.isLogged = false;
     },
-    signOut: (_state) => {
-      _state = initialState;
+    logOut: (state) => {
+      state.id = 0;
+      state.username = "";
+      state.isLogged = false;
     },
   },
 });
 
-export const { login, refreshLogin } = accountSlice.actions;
+export const { login, refreshLogin, logOut } = accountSlice.actions;
 export default accountSlice.reducer;

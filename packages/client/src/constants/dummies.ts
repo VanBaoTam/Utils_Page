@@ -12,7 +12,7 @@ import {
 // ACCOUNT
 const accountList: ILogin[] = [
   { username: "", password: "" },
-  { username: "admin", password: "" },
+  { username: "admin", password: "admin123" },
 ];
 // TASKS
 const tasks: TTask[] = [

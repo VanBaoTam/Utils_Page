@@ -8,9 +8,12 @@ import {
   Link,
 } from "@components/layout/mui-component";
 import { ILogin } from "@/types";
-import { ACCOUNTS } from "@/constants";
-import { toast } from "react-toastify";
+import { accountList } from "@/constants";
 import { displayToast } from "@/utils/toast";
+import { useDispatch } from "react-redux";
+import { login } from "@/slices/account";
+
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const {
@@ -18,17 +21,26 @@ function Login() {
     handleSubmit,
     formState: { errors },
   } = useForm<ILogin>();
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const onSubmit: SubmitHandler<ILogin> = (data) => {
-    console.log("Username:", data.username);
-    console.log("Password:", data.password);
-    if (
-      data.username === ACCOUNTS.username &&
-      data.password === ACCOUNTS.password
-    ) {
-      displayToast("Login succesfully!", "success");
+    if (!data.username || !data.password) {
+      displayToast("Invalid credentials !", "error");
     } else {
-      displayToast("Login failed!", "error");
+      const account = accountList.find(
+        (item) =>
+          item.username === data.username && item.password === data.password
+      );
+
+      if (account) {
+        displayToast("Login succesfully!", "success");
+        setTimeout(() => {
+          dispatch(login({ username: data.username, password: "" }));
+          navigate("/");
+        }, 3500);
+      } else {
+        displayToast("User not found !", "error");
+      }
     }
   };
 

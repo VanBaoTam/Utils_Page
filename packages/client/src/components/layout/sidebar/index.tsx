@@ -22,7 +22,7 @@ import { IoMenu } from "react-icons/io5";
 import { MdTimer } from "react-icons/md";
 import { FiHelpCircle } from "react-icons/fi";
 import { AiFillSetting } from "react-icons/ai";
-import { RiLogoutCircleLine } from "react-icons/ri";
+import { RiLogoutCircleLine, RiLoginCircleLine } from "react-icons/ri";
 import { ReactNode } from "react";
 import {
   sideBarItems,
@@ -33,6 +33,9 @@ import {
 import Logo from "@assets/Logo.png";
 import Footer from "../footer";
 import { Link } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "@/Redux/hooks";
+import { logOut } from "@/slices/account";
+import { displayToast } from "@/utils/toast";
 const drawerWidth = 240;
 type MainLayoutProps = {
   children: ReactNode;
@@ -109,7 +112,8 @@ const Drawer = styled(MuiDrawer, {
 export default function SideBar({ children }: MainLayoutProps) {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
-
+  const accountSelector = useAppSelector((store) => store.account);
+  const dispatch = useAppDispatch();
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -240,33 +244,67 @@ export default function SideBar({ children }: MainLayoutProps) {
             </Link>
           ))}
           <ListItem disablePadding sx={{ display: "block" }}>
-            <Link
-              to={"/login"}
-              style={{ textDecoration: "none", color: "black" }}
-            >
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
-                  px: 2.5,
+            {accountSelector.isLogged ? (
+              <Link
+                to={"#"}
+                style={{ textDecoration: "none", color: "black" }}
+                onClick={() => {
+                  dispatch(logOut());
+                  displayToast("Log out successully!", "success");
                 }}
               >
-                <ListItemIcon
+                <ListItemButton
                   sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : "auto",
-                    justifyContent: "center",
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
                   }}
                 >
-                  <RiLogoutCircleLine />;
-                </ListItemIcon>
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <RiLogoutCircleLine />;
+                  </ListItemIcon>
 
-                <ListItemText
-                  primary={"Account"}
-                  sx={{ opacity: open ? 1 : 0 }}
-                />
-              </ListItemButton>
-            </Link>
+                  <ListItemText
+                    primary={"Account"}
+                    sx={{ opacity: open ? 1 : 0 }}
+                  />
+                </ListItemButton>
+              </Link>
+            ) : (
+              <Link
+                to={"/login"}
+                style={{ textDecoration: "none", color: "black" }}
+              >
+                <ListItemButton
+                  sx={{
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
+                  }}
+                >
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <RiLoginCircleLine />;
+                  </ListItemIcon>
+
+                  <ListItemText
+                    primary={"Account"}
+                    sx={{ opacity: open ? 1 : 0 }}
+                  />
+                </ListItemButton>
+              </Link>
+            )}
           </ListItem>
         </List>
       </Drawer>
