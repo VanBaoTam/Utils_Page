@@ -25,6 +25,14 @@ export enum ETimerDays {
   saturday = "Saturday",
   sunday = "Sunday",
 }
+
+export enum EToast {
+  info = "info",
+  success = "success",
+  warning = "warning",
+  error = "error",
+  default = "default",
+}
 export interface ILogin {
   username: string;
   password: string;

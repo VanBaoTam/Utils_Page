@@ -13,6 +13,7 @@ import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import Timers from "@pages/timers";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import Toast from "./components/layout/toast";
 declare module "@mui/material/styles" {
   interface Theme {
     status: {
@@ -31,6 +32,7 @@ function App() {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <BrowserRouter>
         <CssBaseline />
+        <Toast />
         <ThemeProvider theme={theme}>
           <MainLayout>
             <Routes>

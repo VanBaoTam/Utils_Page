@@ -240,24 +240,33 @@ export default function SideBar({ children }: MainLayoutProps) {
             </Link>
           ))}
           <ListItem disablePadding sx={{ display: "block" }}>
-            <ListItemButton
-              sx={{
-                minHeight: 48,
-                justifyContent: open ? "initial" : "center",
-                px: 2.5,
-              }}
+            <Link
+              to={"/login"}
+              style={{ textDecoration: "none", color: "black" }}
             >
-              <ListItemIcon
+              <ListItemButton
                 sx={{
-                  minWidth: 0,
-                  mr: open ? 3 : "auto",
-                  justifyContent: "center",
+                  minHeight: 48,
+                  justifyContent: open ? "initial" : "center",
+                  px: 2.5,
                 }}
               >
-                <RiLogoutCircleLine />;
-              </ListItemIcon>
-              <ListItemText primary={"Logout"} sx={{ opacity: open ? 1 : 0 }} />
-            </ListItemButton>
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : "auto",
+                    justifyContent: "center",
+                  }}
+                >
+                  <RiLogoutCircleLine />;
+                </ListItemIcon>
+
+                <ListItemText
+                  primary={"Account"}
+                  sx={{ opacity: open ? 1 : 0 }}
+                />
+              </ListItemButton>
+            </Link>
           </ListItem>
         </List>
       </Drawer>

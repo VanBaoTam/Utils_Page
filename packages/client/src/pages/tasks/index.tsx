@@ -10,6 +10,7 @@ import {
   Dialog,
   DialogTitle,
   makeStyles,
+  Typography,
 } from "@components/layout/mui-component";
 import { DialogContent } from "@mui/material";
 import { useCallback, useState } from "react";
@@ -67,6 +68,11 @@ function Tasks() {
   }, []);
   return (
     <Box className={classes.root}>
+      <Box>
+        <Typography variant="h3" sx={{ paddingBottom: "20px " }}>
+          Tasks
+        </Typography>
+      </Box>
       {isMultiSelect && (
         <Notification
           title="Alert Multi Selection"
