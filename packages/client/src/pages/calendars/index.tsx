@@ -1,4 +1,9 @@
-import { calendars } from "@/constants";
+import { useAppDispatch, useAppSelector } from "@/Redux/hooks";
+import {
+  createCalendar,
+  deleteCalendar,
+  updateCalendar,
+} from "@/slices/calendar";
 import { TCalendars } from "@/types";
 import {
   Box,
@@ -12,9 +17,37 @@ import dayjs, { Dayjs } from "dayjs";
 import React, { useEffect, useState } from "react";
 
 function Calendars() {
-  const [calendar, setCalendar] = useState<TCalendars>();
+  const dispatch = useAppDispatch();
+  const calendarSelector = useAppSelector((store) => store.calendar);
+  const [calendar, setCalendar] = useState<TCalendars | null>(null);
   const [notingTime, setNotingTime] = useState<Dayjs>(dayjs());
   const [notification, setNotification] = useState<string>("Unknown");
+
+  const handleCreateCalendar = () => {
+    const newCalendar: TCalendars = {
+      id: calendarSelector.length + 1,
+      user_id: 1,
+      choosen_date: dayjs().format("DD / MM / YYYY"),
+      notification: "Unknown",
+      noting_time: dayjs().format("HH:mm"),
+    };
+    dispatch(createCalendar(newCalendar));
+    setCalendar(null);
+  };
+  const handleUpdateCalendar = () => {
+    const updatedCalendar: TCalendars = {
+      id: calendar?.id || 1,
+      user_id: calendar?.user_id || 1,
+      choosen_date: notingTime.format("DD / MM / YYYY"),
+      notification: notification,
+      noting_time: notingTime.format("HH:mm"),
+    };
+    dispatch(updateCalendar(updatedCalendar));
+  };
+  const handleDeleteCalendar = (id: number) => {
+    dispatch(deleteCalendar(id));
+  };
+
   useEffect(() => {
     if (calendar) {
       setNotingTime(
@@ -46,7 +79,9 @@ function Calendars() {
           >
             CALENDARS
           </Typography>
-          <Button variant="contained">ADD </Button>
+          <Button variant="contained" onClick={handleCreateCalendar}>
+            ADD
+          </Button>
         </Box>
         <Box
           sx={{
@@ -54,7 +89,7 @@ function Calendars() {
             height: "100%",
           }}
         >
-          {calendars.map((element) => (
+          {calendarSelector.map((element) => (
             <Box
               key={element.id}
               onClick={() => {
@@ -120,6 +155,9 @@ function Calendars() {
                     bgcolor: "tomato",
                   },
                 }}
+                onClick={() => {
+                  handleDeleteCalendar(element.id);
+                }}
               >
                 Delete
               </Button>
@@ -136,7 +174,7 @@ function Calendars() {
               <MobileDateTimePicker
                 sx={{ m: 1 }}
                 label="Choosen Date Time:"
-                minDateTime={dayjs() as any}
+                minDateTime={dayjs().subtract(3, "minute") as any}
                 value={notingTime as any}
                 onChange={(value: Date | null, _context: any) => {
                   if (value) {
@@ -156,7 +194,9 @@ function Calendars() {
                 />
               </Box>
               <Box sx={{ m: 1, py: 2 }}>
-                <Button variant="contained">CONFIRM</Button>
+                <Button variant="contained" onClick={handleUpdateCalendar}>
+                  CONFIRM
+                </Button>
               </Box>
             </React.Fragment>
           )}

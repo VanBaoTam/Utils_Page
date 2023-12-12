@@ -1,4 +1,6 @@
-import { timers, DAYS } from "@/constants";
+import { useAppDispatch, useAppSelector } from "@/Redux/hooks";
+import { DAYS } from "@/constants";
+import { createTimer, deleteTimer, updateTimer } from "@/slices/timer";
 import { ETimerStatus, TTimers } from "@/types";
 import {
   Box,
@@ -17,10 +19,13 @@ import dayjs, { Dayjs } from "dayjs";
 import React, { useEffect, useState } from "react";
 
 function Timers() {
-  const [timer, setTimer] = useState<TTimers>();
-  const [notingTime, setNotingTime] = useState<Dayjs>(dayjs());
-  const [days, setDays] = useState<string[]>([]);
+  const timerSelector = useAppSelector((store) => store.timer);
+  const [timer, setTimer] = useState<TTimers | null>(null);
   const [title, setTitle] = useState<string>("");
+  const [days, setDays] = useState<string[]>([]);
+  const [repeater, setRepeater] = useState<ETimerStatus>(ETimerStatus.always);
+  const [notingTime, setNotingTime] = useState<Dayjs>(dayjs());
+  const dispatch = useAppDispatch();
   const handleDayToggle = (day: string) => {
     setDays((prevDays) => {
       if (prevDays.includes(day)) {
@@ -31,7 +36,33 @@ function Timers() {
     });
   };
   const handleRepeaterChange = (event: any) => {
-    console.log(event.target.value);
+    setRepeater(event.target.value);
+  };
+  const handleCreateTimer = () => {
+    const newTimer: TTimers = {
+      id: timerSelector.length + 1,
+      user_id: 1,
+      title: "Untitled",
+      choosen_days: [""],
+      noting_time: dayjs().format("HH:mm"),
+      repeater: ETimerStatus.always,
+    };
+    dispatch(createTimer(newTimer));
+    setTimer(null);
+  };
+  const handleUpdateTimer = () => {
+    const updatedTimer: TTimers = {
+      id: timer?.id || 1,
+      user_id: timer?.user_id || 1,
+      title,
+      repeater,
+      choosen_days: days,
+      noting_time: notingTime.format("HH:mm"),
+    };
+    dispatch(updateTimer(updatedTimer));
+  };
+  const handleDeleteTimer = (id: number) => {
+    dispatch(deleteTimer(id));
   };
 
   useEffect(() => {
@@ -62,7 +93,9 @@ function Timers() {
           >
             TIMERS
           </Typography>
-          <Button variant="contained">ADD </Button>
+          <Button variant="contained" onClick={handleCreateTimer}>
+            ADD
+          </Button>
         </Box>
         <Box
           sx={{
@@ -70,7 +103,7 @@ function Timers() {
             height: "100%",
           }}
         >
-          {timers.map((element) => (
+          {timerSelector.map((element) => (
             <Box
               key={element.id}
               onClick={() => {
@@ -123,6 +156,9 @@ function Timers() {
                   "&:hover": {
                     bgcolor: "tomato",
                   },
+                }}
+                onClick={() => {
+                  handleDeleteTimer(element.id);
                 }}
               >
                 Delete
@@ -197,7 +233,9 @@ function Timers() {
                 }}
               />
               <Box sx={{ py: 2 }}>
-                <Button variant="contained">CONFIRM</Button>
+                <Button variant="contained" onClick={handleUpdateTimer}>
+                  CONFIRM
+                </Button>
               </Box>
             </React.Fragment>
           )}
