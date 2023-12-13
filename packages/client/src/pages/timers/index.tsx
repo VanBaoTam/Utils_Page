@@ -62,6 +62,7 @@ function Timers() {
     dispatch(updateTimer(updatedTimer));
   };
   const handleDeleteTimer = (id: number) => {
+    setTimer(null);
     dispatch(deleteTimer(id));
   };
 
@@ -157,7 +158,8 @@ function Timers() {
                     bgcolor: "tomato",
                   },
                 }}
-                onClick={() => {
+                onClick={(event) => {
+                  event.stopPropagation();
                   handleDeleteTimer(element.id);
                 }}
               >

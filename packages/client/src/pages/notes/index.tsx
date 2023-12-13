@@ -14,7 +14,7 @@ function Notes() {
   const [name, setName] = useState<string>("");
   const noteSelector = useAppSelector((store) => store.note);
   const dispatch = useAppDispatch();
-  const [note, setNote] = useState<TNote | null>(null);
+  const [note, setNote] = useState<TNote | undefined>(undefined);
   const handleTextareaChange = (event: any) => {
     setContent(event.target.value);
   };
@@ -45,11 +45,13 @@ function Notes() {
     dispatch(updateNote(newNote));
   };
   const handleDeleteNote = (id: number) => {
-    setNote(null);
+    if (note && note.id === id) {
+      setNote(undefined);
+    }
     dispatch(deleteNote(id));
   };
   useEffect(() => {
-    if (note === null) return;
+    console.log(note);
     if (note) {
       setContent(note?.content || "");
       setName(note?.name || "Untitled");
@@ -131,7 +133,10 @@ function Notes() {
                           bgcolor: "tomato",
                         },
                       }}
-                      onClick={() => {
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        setNote(undefined);
+
                         handleDeleteNote(element.id);
                       }}
                     >
@@ -144,40 +149,44 @@ function Notes() {
         </Box>
       </Grid>
 
-      {note !== null ? (
-        <Grid item xs={9} sx={{ height: "100%", pl: 2 }}>
-          <form
-            onSubmit={(event) => {
-              event.preventDefault();
-            }}
-          >
-            <TextField
-              onChange={handleNameChange}
-              label="Title"
-              margin="normal"
-              value={name}
-              fullWidth
-              sx={{ mt: 0 }}
-            />
-          </form>
-          <Box sx={{ height: "100%" }}>
-            <textarea
-              style={{
-                minHeight: "55vh",
-                maxHeight: "100%",
-                width: "100%",
+      <Grid item xs={9} sx={{ height: "100%", pl: 2 }}>
+        {note ? (
+          <Box>
+            <form
+              onSubmit={(event) => {
+                event.preventDefault();
               }}
-              onChange={handleTextareaChange}
-              value={content}
-            />
-            <Box sx={{ py: 2 }}>
-              <Button variant="contained" onClick={handleUpdateNote}>
-                SAVE
-              </Button>
+            >
+              <TextField
+                onChange={handleNameChange}
+                label="Title"
+                margin="normal"
+                value={name}
+                fullWidth
+                sx={{ mt: 0 }}
+              />
+            </form>
+            <Box sx={{ height: "100%" }}>
+              <textarea
+                style={{
+                  minHeight: "55vh",
+                  maxHeight: "100%",
+                  width: "100%",
+                }}
+                onChange={handleTextareaChange}
+                value={content}
+              />
+              <Box sx={{ py: 2 }}>
+                <Button variant="contained" onClick={handleUpdateNote}>
+                  SAVE
+                </Button>
+              </Box>
             </Box>
           </Box>
-        </Grid>
-      ) : null}
+        ) : (
+          <Box></Box>
+        )}
+      </Grid>
     </Grid>
   );
 }

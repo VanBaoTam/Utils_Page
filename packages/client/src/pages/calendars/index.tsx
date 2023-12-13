@@ -45,6 +45,7 @@ function Calendars() {
     dispatch(updateCalendar(updatedCalendar));
   };
   const handleDeleteCalendar = (id: number) => {
+    setCalendar(null);
     dispatch(deleteCalendar(id));
   };
 
@@ -155,7 +156,8 @@ function Calendars() {
                     bgcolor: "tomato",
                   },
                 }}
-                onClick={() => {
+                onClick={(event) => {
+                  event.stopPropagation();
                   handleDeleteCalendar(element.id);
                 }}
               >
