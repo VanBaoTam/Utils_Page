@@ -51,15 +51,17 @@ function Calendars() {
 
   useEffect(() => {
     if (calendar) {
+      const formattedDate = dayjs(calendar.choosen_date, "DD / MM / YYYY");
+      const formattedTime = dayjs(calendar.noting_time, "HH:mm");
       setNotingTime(
-        dayjs(
-          calendar.choosen_date + "T" + calendar.noting_time,
-          "YYYY-MM-DDTHH:mm"
-        )
+        formattedDate
+          .add(formattedTime.hour(), "hour")
+          .add(formattedTime.minute(), "minute")
       );
       setNotification(calendar.notification);
     }
   }, [calendar]);
+
   //------------------------------------
   return (
     <Grid container sx={{ height: "100%" }}>
@@ -119,7 +121,9 @@ function Calendars() {
                     whiteSpace: "nowrap",
                   }}
                 >
-                  {dayjs(element.choosen_date).format("DD / MM / YYYY")}
+                  {dayjs(element.choosen_date, "DD / MM / YYYY").format(
+                    "DD / MM / YYYY"
+                  )}
                 </Typography>
                 <Typography
                   variant="inherit"
