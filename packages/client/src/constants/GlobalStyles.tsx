@@ -19,9 +19,6 @@ const gbSelectDropDown: SxProps = {
   background: "white",
   borderRadius: "4px",
 };
-const gbAboveLabel: SxProps = {
-  paddingBottom: "10px",
-};
 const gbSubjectTitle: SxProps = {
   fontWeight: "400",
   width: "50%",
@@ -49,7 +46,6 @@ const gbLoginInput: SxProps = {
 export {
   gbModalForm,
   gbSelectDropDown,
-  gbAboveLabel,
   gbSubjectTitle,
   gbFilterTitle,
   gbSubmitButton,

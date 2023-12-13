@@ -10,17 +10,14 @@ import {
 } from "@components/layout/mui-component";
 import { useCallback, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { GridValidRowModel } from "@mui/x-data-grid";
 import { MobileDateTimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import React from "react";
-import {
-  gbAboveLabel,
-  gbModalForm,
-  gbSelectDropDown,
-  gbSubmitButton,
-} from "@/constants";
-import { ETasksStatus, UpdatingFormProps } from "@/types";
+import { gbModalForm, gbSelectDropDown, gbSubmitButton } from "@/constants";
+import { ETasksStatus, TTask, UpdatingFormProps } from "@/types";
+import { useAppDispatch, useAppSelector } from "@/Redux/hooks";
+import { updateTask } from "@/slices/task";
+import { displayToast } from "@/utils/toast";
 
 //-----------------------------------------
 //* Interfaces & Types
@@ -35,22 +32,60 @@ function UpdatingForm(props: UpdatingFormProps) {
   //-----------------------------------------
   const { handleRefreshUpdating, selectedId, data } = props ?? {};
   const [open, setOpen] = useState(true);
+  const dispatch = useAppDispatch();
+  const taskSelector = useAppSelector((store) => store.task);
   const { register, handleSubmit } = useForm<TaskFormData>();
-  const [selectedData, setSelectedData] = useState<
-    GridValidRowModel | undefined
-  >();
-  const [startedDate, setStartedDate] = useState<any>(dayjs());
-  const [notingDate, setNotingDate] = useState<any>(dayjs());
-  const [finishedDate, setFinishedDate] = useState<any>(dayjs());
-  const minDateTime = dayjs().subtract(1, "minute");
+  const [description, setDescription] = useState<string>();
+  const [status, setStatus] = useState<ETasksStatus>();
+  const [selectedData, setSelectedData] = useState<TTask>();
+  const [startedDate, setStartedDate] = useState<any>();
+  const [notingDate, setNotingDate] = useState<any>();
+  const [finishedDate, setFinishedDate] = useState<any>();
+  const minDateTime = dayjs().subtract(3, "minute");
   //-----------------------------------------
   //* Funcs
   const onSubmit = useCallback(
-    async (data: TaskFormData) => {
-      console.log("DATA: ", data);
-      console.log("STARTED DATE: ", startedDate.$d);
-      console.log("NOTING DATE: ", notingDate.$d);
-      console.log("FINISHED DATE: ", finishedDate.$d);
+    (data: TaskFormData) => {
+      if (finishedDate <= notingDate || notingDate <= startedDate) {
+        displayToast(
+          "Keep Finished date > Noting date > Started date",
+          "error"
+        );
+        return;
+      }
+      let EStatus;
+      switch (data.status) {
+        case ETasksStatus.active: {
+          EStatus = ETasksStatus.active;
+          break;
+        }
+        case ETasksStatus.suspended: {
+          EStatus = ETasksStatus.suspended;
+          break;
+        }
+        case ETasksStatus.expired: {
+          EStatus = ETasksStatus.expired;
+          break;
+        }
+        case ETasksStatus.finished: {
+          EStatus = ETasksStatus.finished;
+          break;
+        }
+      }
+      const updatedTask: TTask = {
+        id: selectedId,
+        user_id: selectedData?.user_id || 1,
+        name: data.name,
+        description: data.description,
+        status: EStatus || ETasksStatus.suspended,
+        created_date: selectedData?.created_date || new Date(),
+        started_date: startedDate,
+        noting_date: notingDate,
+        finished_date: finishedDate,
+      };
+      console.log(updatedTask);
+      dispatch(updateTask(updatedTask));
+      handleClose();
     },
     [selectedId]
   );
@@ -61,16 +96,18 @@ function UpdatingForm(props: UpdatingFormProps) {
 
   //-----------------------------------------
   useEffect(() => {
-    const selectedData = data.find((item) => {
+    const selectedData = taskSelector.find((item) => {
       return item.id == selectedId;
     });
     if (selectedData) {
+      console.log(selectedData);
       setSelectedData(selectedData);
-      setStartedDate(selectedData.started_date);
-      setNotingDate(selectedData.noting_date);
-      setFinishedDate(selectedData.finished_date);
+      setDescription(selectedData.description);
+      setStatus(selectedData.status);
+      setStartedDate(dayjs(selectedData.started_date.toISOString()));
+      setNotingDate(dayjs(selectedData.noting_date.toISOString()));
+      setFinishedDate(dayjs(selectedData.finished_date.toISOString()));
     }
-    console.log(selectedData);
   }, [selectedId, data]);
 
   //-----------------------------------------
@@ -87,7 +124,6 @@ function UpdatingForm(props: UpdatingFormProps) {
                   {...register("name")}
                   defaultValue={selectedData.name}
                   margin="normal"
-                  sx={gbAboveLabel}
                 />
 
                 <MobileDateTimePicker
@@ -95,7 +131,7 @@ function UpdatingForm(props: UpdatingFormProps) {
                   value={dayjs(startedDate)}
                   minDateTime={minDateTime}
                   onChange={(value: any) => {
-                    setStartedDate(dayjs(value).format("YYYY-MM-DDTHH:mm:ss"));
+                    setStartedDate(dayjs(value));
                   }}
                 />
                 <br />
@@ -104,7 +140,7 @@ function UpdatingForm(props: UpdatingFormProps) {
                   value={dayjs(notingDate)}
                   minDateTime={minDateTime}
                   onChange={(value: any) => {
-                    setNotingDate(dayjs(value).format("YYYY-MM-DDTHH:mm:ss"));
+                    setNotingDate(dayjs(value));
                   }}
                 />
                 <br />
@@ -113,19 +149,18 @@ function UpdatingForm(props: UpdatingFormProps) {
                   value={dayjs(finishedDate)}
                   minDateTime={minDateTime}
                   onChange={(value: any) => {
-                    setFinishedDate(dayjs(value).format("YYYY-MM-DDTHH:mm:ss"));
+                    setFinishedDate(dayjs(value));
                   }}
                 />
-                <FormControl margin="normal" sx={gbAboveLabel}>
+                <FormControl margin="normal">
                   <InputLabel id="status-label" sx={gbSelectDropDown}>
                     Status
                   </InputLabel>
                   <Select
                     labelId="status-label"
                     id="status"
-                    defaultValue=""
+                    defaultValue={status}
                     {...register("status")}
-                    sx={gbAboveLabel}
                   >
                     <MenuItem value={ETasksStatus.active}>Active</MenuItem>
                     <MenuItem value={ETasksStatus.suspended}>
@@ -136,9 +171,8 @@ function UpdatingForm(props: UpdatingFormProps) {
                 </FormControl>
                 <TextField
                   label="Description"
+                  defaultValue={description}
                   {...register("description", { required: true })}
-                  margin="normal"
-                  sx={gbAboveLabel}
                 />
 
                 <Button

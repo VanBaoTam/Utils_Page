@@ -1,7 +1,9 @@
+import { useAppDispatch, useAppSelector } from "@/Redux/hooks";
 import Notification from "@/components/modal";
 import AddingForm from "@/components/task-management/AddingForm";
 import UpdatingForm from "@/components/task-management/UpdatingForm";
 import { tasks } from "@/constants";
+import { deleteTask } from "@/slices/task";
 import { taskCols } from "@/types";
 import {
   Box,
@@ -30,6 +32,8 @@ const useStyles = makeStyles((theme: any) => ({
 }));
 function Tasks() {
   const classes = useStyles();
+  const dispatch = useAppDispatch();
+  const taskSelector = useAppSelector((store) => store.task);
   const [ids, setIds] = useState<number[]>([]);
   const [isOpenAdd, setIsOpenAdd] = useState<boolean>(false);
   const [update, setUpdate] = useState<boolean>(false);
@@ -42,7 +46,6 @@ function Tasks() {
   const handleRefreshUpdating = useCallback(() => {
     setUpdate(false);
   }, []);
-
   const handleUpdate = useCallback(() => {
     if (ids.length == 1) {
       setSelectedId(ids[0]);
@@ -124,7 +127,8 @@ function Tasks() {
         <Button
           variant="contained"
           onClick={() => {
-            console.log("DELETE EVENT");
+            dispatch(deleteTask(ids[0]));
+            console.log("HERE");
           }}
           sx={{ marginX: "0.5rem" }}
         >
@@ -132,7 +136,7 @@ function Tasks() {
         </Button>
       </Box>
       <DataGrid
-        rows={tasks}
+        rows={taskSelector}
         columns={taskCols}
         initialState={{
           pagination: {

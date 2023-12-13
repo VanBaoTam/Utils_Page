@@ -4,8 +4,11 @@ import { useForm } from "react-hook-form";
 import { Button, TextField } from "@mui/material";
 import { MobileDateTimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { ETasksStatus } from "@/types";
-import { gbAboveLabel, gbSelectDropDown } from "@/constants";
+import { ETasksStatus, TTask } from "@/types";
+import { gbSelectDropDown } from "@/constants";
+import { useAppDispatch, useAppSelector } from "@/Redux/hooks";
+import { createTask } from "@/slices/task";
+import { displayToast } from "@/utils/toast";
 //-----------------------------------------
 interface TaskFormData {
   name: string;
@@ -13,10 +16,12 @@ interface TaskFormData {
   description: string;
 }
 
-const minDateTime = dayjs().subtract(1, "minute");
+const minDateTime = dayjs().subtract(3, "minute");
 //-----------------------------------------
-function AddingForm(props: { handleCloseAdd: (props: any) => void }) {
+function AddingForm(props: { handleCloseAdd: () => void }) {
   const { handleCloseAdd } = props;
+  const dispatch = useAppDispatch();
+  const taskSelector = useAppSelector((store) => store.task);
   const [startedDate, setStartedDate] = useState<any>(dayjs());
   const [notingDate, setNotingDate] = useState<any>(dayjs());
   const [finishedDate, setFinishedDate] = useState<any>(dayjs());
@@ -28,14 +33,30 @@ function AddingForm(props: { handleCloseAdd: (props: any) => void }) {
 
   //-----------------------------------------
   const onSubmit = useCallback(
-    async (data: TaskFormData) => {
-      console.log("DATA: ", data);
-      console.log("STARTED DATE: ", startedDate.$d);
-      console.log("NOTING DATE: ", notingDate.$d);
-      console.log("FINISHED DATE: ", finishedDate.$d);
+    (data: TaskFormData) => {
+      if (finishedDate <= notingDate || notingDate <= startedDate) {
+        displayToast(
+          "Keep Finished date > Noting date > Started date",
+          "error"
+        );
+        return;
+      }
+      const newTask: TTask = {
+        id: taskSelector.length + 1,
+        user_id: 1,
+        name: data.name,
+        description: data.description,
+        status: ETasksStatus.active,
+        created_date: new Date(),
+        started_date: startedDate,
+        noting_date: notingDate,
+        finished_date: finishedDate,
+      };
+      dispatch(createTask(newTask));
+      handleCloseAdd();
     },
 
-    [handleCloseAdd]
+    [handleCloseAdd, startedDate, notingDate, finishedDate]
   );
 
   //-----------------------------------------
@@ -57,7 +78,7 @@ function AddingForm(props: { handleCloseAdd: (props: any) => void }) {
             value={dayjs(startedDate)}
             minDateTime={minDateTime}
             onChange={(value: any) => {
-              setStartedDate(dayjs(value).format("YYYY-MM-DDTHH:mm:ss"));
+              setStartedDate(dayjs(value));
             }}
           />
           <br />
@@ -66,7 +87,7 @@ function AddingForm(props: { handleCloseAdd: (props: any) => void }) {
             value={dayjs(notingDate)}
             minDateTime={minDateTime}
             onChange={(value: any) => {
-              setNotingDate(dayjs(value).format("YYYY-MM-DDTHH:mm:ss"));
+              setNotingDate(dayjs(value));
             }}
           />
           <br />
@@ -75,10 +96,10 @@ function AddingForm(props: { handleCloseAdd: (props: any) => void }) {
             value={dayjs(finishedDate)}
             minDateTime={minDateTime}
             onChange={(value: any) => {
-              setFinishedDate(dayjs(value).format("YYYY-MM-DDTHH:mm:ss"));
+              setFinishedDate(dayjs(value));
             }}
           />
-          <FormControl margin="normal" sx={gbAboveLabel}>
+          <FormControl margin="normal">
             <InputLabel id="status-label" sx={gbSelectDropDown}>
               Status
             </InputLabel>
@@ -97,7 +118,6 @@ function AddingForm(props: { handleCloseAdd: (props: any) => void }) {
             label="Description"
             {...register("description", { required: true })}
             margin="normal"
-            sx={gbAboveLabel}
           />
           <Button type="submit" variant="contained" color="primary">
             Submit

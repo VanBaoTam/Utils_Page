@@ -89,7 +89,6 @@ export type UpdatingFormProps = {
   data: any[];
   handleRefreshUpdating: () => void;
 };
-
 //COLS
 export const taskCols: GridColDef[] = [
   { field: "id", headerName: "ID", width: 90 },
