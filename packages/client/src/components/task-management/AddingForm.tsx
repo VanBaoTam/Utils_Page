@@ -34,19 +34,45 @@ function AddingForm(props: { handleCloseAdd: () => void }) {
   //-----------------------------------------
   const onSubmit = useCallback(
     (data: TaskFormData) => {
-      if (finishedDate <= notingDate || notingDate <= startedDate) {
+      if (notingDate <= startedDate) {
         displayToast(
-          "Keep Finished date > Noting date > Started date",
+          "Please make sure Noting Date is later than Started Date",
           "error"
         );
         return;
       }
+      if (finishedDate <= notingDate) {
+        displayToast(
+          "Please make sure Finished Date is later than Noting Date",
+          "error"
+        );
+        return;
+      }
+      let EStatus;
+      switch (data.status) {
+        case ETasksStatus.active: {
+          EStatus = ETasksStatus.active;
+          break;
+        }
+        case ETasksStatus.suspended: {
+          EStatus = ETasksStatus.suspended;
+          break;
+        }
+        case ETasksStatus.expired: {
+          EStatus = ETasksStatus.expired;
+          break;
+        }
+        case ETasksStatus.finished: {
+          EStatus = ETasksStatus.finished;
+          break;
+        }
+      }
       const newTask: TTask = {
-        id: taskSelector.length + 1,
+        id: taskSelector.ids + 1,
         user_id: 1,
         name: data.name,
         description: data.description,
-        status: ETasksStatus.active,
+        status: EStatus || ETasksStatus.active,
         created_date: new Date(),
         started_date: startedDate,
         noting_date: notingDate,
@@ -119,6 +145,9 @@ function AddingForm(props: { handleCloseAdd: () => void }) {
             {...register("description", { required: true })}
             margin="normal"
           />
+          {errors.description && (
+            <span style={{ color: "#BF2C34" }}>This field is required</span>
+          )}
           <Button type="submit" variant="contained" color="primary">
             Submit
           </Button>

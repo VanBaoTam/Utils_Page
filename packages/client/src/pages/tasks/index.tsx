@@ -15,6 +15,10 @@ import {
 } from "@components/layout/mui-component";
 import { DialogContent } from "@mui/material";
 import { useCallback, useState } from "react";
+enum EType {
+  update = "update",
+  delete = "delete",
+}
 
 const useStyles = makeStyles((theme: any) => ({
   root: {
@@ -32,7 +36,7 @@ const useStyles = makeStyles((theme: any) => ({
 function Tasks() {
   const classes = useStyles();
   const dispatch = useAppDispatch();
-  const taskSelector = useAppSelector((store) => store.task);
+  const taskSelector = useAppSelector((store) => store.task.list);
   const [ids, setIds] = useState<number[]>([]);
   const [isOpenAdd, setIsOpenAdd] = useState<boolean>(false);
   const [update, setUpdate] = useState<boolean>(false);
@@ -45,22 +49,29 @@ function Tasks() {
   const handleRefreshUpdating = useCallback(() => {
     setUpdate(false);
   }, []);
-  const handleUpdate = useCallback(() => {
-    if (ids.length == 1) {
-      setSelectedId(ids[0]);
-      setUpdate(true);
-    } else if (ids.length > 1) {
-      setIsMultiSelect(true);
-      setTimeout(() => {
-        setIsMultiSelect(false);
-      }, 5000);
-    } else {
-      setNoneIsSelected(true);
-      setTimeout(() => {
-        setNoneIsSelected(false);
-      }, 5000);
-    }
-  }, [ids]);
+  const handleSelect = useCallback(
+    (type: string) => {
+      if (ids.length == 1) {
+        if (type === EType.update) {
+          setSelectedId(ids[0]);
+          setUpdate(true);
+        } else {
+          dispatch(deleteTask(ids[0]));
+        }
+      } else if (ids.length > 1) {
+        setIsMultiSelect(true);
+        setTimeout(() => {
+          setIsMultiSelect(false);
+        }, 5000);
+      } else {
+        setNoneIsSelected(true);
+        setTimeout(() => {
+          setNoneIsSelected(false);
+        }, 5000);
+      }
+    },
+    [ids]
+  );
   const handleSelectionModel = useCallback((ids: any[]) => {
     if (!ids.length) {
       return;
@@ -78,13 +89,13 @@ function Tasks() {
       {isMultiSelect && (
         <Notification
           title="Alert Multi Selection"
-          message="Xin hãy chọn duy nhất 1 hàng mỗi lần cập nhật!!!"
+          message="Please select only 1 task per operation!!!"
         />
       )}
       {noneIsSelected && (
         <Notification
           title="Alert None Selection"
-          message="Please choose one task!"
+          message="Please select 1 task before!!!"
         />
       )}
       <Dialog
@@ -98,13 +109,22 @@ function Tasks() {
           <AddingForm handleCloseAdd={handleCloseAdd} />
         </DialogContent>
       </Dialog>
-      {update && selectedId && (
-        <UpdatingForm
-          data={taskSelector}
-          selectedId={selectedId}
-          handleRefreshUpdating={handleRefreshUpdating}
-        />
-      )}
+      <Dialog
+        open={update}
+        onClose={handleRefreshUpdating}
+        maxWidth={"md"}
+        fullWidth
+      >
+        <DialogTitle>Updating Task</DialogTitle>
+        <DialogContent>
+          <UpdatingForm
+            data={taskSelector}
+            selectedId={selectedId}
+            handleRefreshUpdating={handleRefreshUpdating}
+          />
+        </DialogContent>
+      </Dialog>
+
       <Box sx={{ pb: "1rem" }}>
         <Button
           variant="contained"
@@ -117,7 +137,7 @@ function Tasks() {
         <Button
           variant="contained"
           onClick={() => {
-            handleUpdate();
+            handleSelect(EType.update);
           }}
           sx={{ marginX: "1.5rem" }}
         >
@@ -126,8 +146,7 @@ function Tasks() {
         <Button
           variant="contained"
           onClick={() => {
-            dispatch(deleteTask(ids[0]));
-            console.log("HERE");
+            handleSelect(EType.delete);
           }}
           sx={{ marginX: "0.5rem" }}
         >

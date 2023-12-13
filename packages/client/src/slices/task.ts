@@ -1,27 +1,37 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { TTask } from "@/types";
-const initialState: TTask[] = [];
+
+interface TaskState {
+  ids: number;
+  list: TTask[];
+}
+
+const initialState: TaskState = {
+  ids: 0,
+  list: [],
+};
 
 const taskSlice = createSlice({
   name: "task",
   initialState,
   reducers: {
     createTask: (state, action: PayloadAction<TTask>) => {
-      state.push(action.payload);
+      state.ids++;
+      state.list.push(action.payload);
     },
     updateTask: (state, action: PayloadAction<TTask>) => {
       const updatedTask = action.payload;
-      const index = state.findIndex((task) => task.id === updatedTask.id);
+      const index = state.list.findIndex((task) => task.id === updatedTask.id);
       if (index !== -1) {
-        state[index] = updatedTask;
+        state.list[index] = updatedTask;
       }
     },
     deleteTask: (state, action: PayloadAction<number>) => {
       const taskIdToDelete = action.payload;
-      const index = state.findIndex((task) => task.id === taskIdToDelete);
+      const index = state.list.findIndex((task) => task.id === taskIdToDelete);
 
       if (index !== -1) {
-        state.splice(index, 1);
+        state.list.splice(index, 1);
       }
     },
   },
