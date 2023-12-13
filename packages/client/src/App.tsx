@@ -7,7 +7,7 @@ import Notes from "@pages/notes";
 import NotFound from "@pages/not-found";
 import MainLayout from "@components/layout";
 import Calendars from "@pages/calendars";
-import Setting from "@pages/setting";
+// import Setting from "@pages/setting";
 import Help from "@pages/help";
 import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import Timers from "@pages/timers";
@@ -46,7 +46,6 @@ function App() {
                 <Route path="/notes" element={<Notes />} />
                 <Route path="/timers" element={<Timers />} />
                 <Route path="/calendars" element={<Calendars />} />
-                <Route path="/setting" element={<Setting />} />
                 <Route path="/help" element={<Help />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>

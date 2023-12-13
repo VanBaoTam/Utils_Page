@@ -1,5 +1,5 @@
-function Setting() {
-  return <div>Setting</div>;
-}
+// function Setting() {
+//   return <div>Setting</div>;
+// }
 
-export default Setting;
+// export default Setting;

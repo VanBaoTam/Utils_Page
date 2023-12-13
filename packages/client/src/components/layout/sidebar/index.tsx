@@ -21,7 +21,7 @@ import { GrNotes } from "react-icons/gr";
 import { IoMenu } from "react-icons/io5";
 import { MdTimer } from "react-icons/md";
 import { FiHelpCircle } from "react-icons/fi";
-import { AiFillSetting } from "react-icons/ai";
+// import { AiFillSetting } from "react-icons/ai";
 import { RiLogoutCircleLine, RiLoginCircleLine } from "react-icons/ri";
 import { ReactNode } from "react";
 import {
@@ -145,11 +145,13 @@ export default function SideBar({ children }: MainLayoutProps) {
       </AppBar>
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
-          <img
-            src={Logo}
-            style={{ width: "100px", height: "55px", marginRight: "2rem" }}
-            alt="logo"
-          />
+          <Link to="/">
+            <img
+              src={Logo}
+              style={{ width: "100px", height: "55px", marginRight: "2rem" }}
+              alt="logo"
+            />
+          </Link>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "rtl" ? (
               <ChevronRightIcon />
@@ -229,8 +231,8 @@ export default function SideBar({ children }: MainLayoutProps) {
                       switch (index) {
                         case 0:
                           return <FiHelpCircle />;
-                        case 1:
-                          return <AiFillSetting />;
+                        // case 1:
+                        //   return <AiFillSetting />;
                         case 2:
                           return <RiLogoutCircleLine />;
                         default:

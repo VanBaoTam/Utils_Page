@@ -1,3 +1,3 @@
 const sideBarLinks = ["/tasks", "/notes", "/timers", "/calendars"];
-const underSideBarLinks = ["/help", "/setting"];
+const underSideBarLinks = ["/help"];
 export { sideBarLinks, underSideBarLinks };

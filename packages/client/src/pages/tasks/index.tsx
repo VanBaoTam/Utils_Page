@@ -2,7 +2,6 @@ import { useAppDispatch, useAppSelector } from "@/Redux/hooks";
 import Notification from "@/components/modal";
 import AddingForm from "@/components/task-management/AddingForm";
 import UpdatingForm from "@/components/task-management/UpdatingForm";
-import { tasks } from "@/constants";
 import { deleteTask } from "@/slices/task";
 import { taskCols } from "@/types";
 import {
@@ -101,7 +100,7 @@ function Tasks() {
       </Dialog>
       {update && selectedId && (
         <UpdatingForm
-          data={tasks}
+          data={taskSelector}
           selectedId={selectedId}
           handleRefreshUpdating={handleRefreshUpdating}
         />
