@@ -8,3 +8,9 @@ export interface IRegister {
   name: string;
   email: string;
 }
+export enum ETypeValidation {
+  username = "username",
+  password = "password",
+  name = "name",
+  email = "email",
+}

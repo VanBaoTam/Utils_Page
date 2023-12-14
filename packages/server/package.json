@@ -1,13 +1,16 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "main": "dist/server.js",
   "type": "module",
   "scripts": {
     "build": "npx tsc",
-    "start": "node dist/index.js",
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\""
+    "clean": "sh ./clean.sh",
+    "clean:windows": "clean.bat",
+    "predev": "npm run clean && npm run build",
+    "predev1": "npm run clean ; npm run clean:windows",
+    "dev": "nodemon --experimental-modules --es-module-specifier-resolution=node dist/server.js",
+    "dev1": "concurrently \"npx tsc --watch\" \"nodemon -q dist/server.js\""
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

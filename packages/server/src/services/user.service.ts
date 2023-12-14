@@ -1,10 +1,15 @@
 import { Request, Response } from "express";
-import { ILogin, IRegister } from "../constants";
+import {
+  CredentialsValidation,
+  ETypeValidation,
+  ILogin,
+  IRegister,
+} from "../constants";
 import { datasource } from "../datasource/index";
 import { responseMessageInstance } from "../utils/index";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
-
+import bcrypt from "bcryptjs";
 dotenv.config();
 //------------------------------------------------
 export class UserService {
@@ -28,69 +33,51 @@ export class UserService {
         "Invalid Username or Password"
       );
     }
+    const isValidCredentials =
+      CredentialsValidation(ETypeValidation.password, password) &&
+      CredentialsValidation(ETypeValidation.username, username);
 
+    if (!isValidCredentials) {
+      return responseMessageInstance.getError(res, 400, "Invalid Credentials");
+    }
     try {
-      const authQuery =
-        'SELECT role_id,id FROM "User" WHERE username = $1 AND password = $2';
-      const authValues = [username, password];
+      const authQuery = 'SELECT password FROM "User" WHERE username = $1';
+      const authValues = [username];
       const authResult = await datasource.query(authQuery, authValues);
-
       if (!authResult.rows.length) {
+        return responseMessageInstance.getError(res, 404, "User not found!");
+      }
+
+      const storedPassword = authResult.rows[0].password;
+      const passwordMatch = await bcrypt.compare(password, storedPassword);
+
+      if (!passwordMatch) {
         return responseMessageInstance.getError(
           res,
           401,
-          "Invalid Username or Password"
+          "Username or Password is wrong!"
         );
       }
-
-      const roleId = authResult.rows?.[0]?.role_id;
-      const roleQuery = 'SELECT role_name FROM "Role" WHERE id = $1';
-      const roleResult = await datasource.query(roleQuery, [roleId]);
-
-      if (!roleResult.rows.length) {
-        return responseMessageInstance.getError(
-          res,
-          400,
-          "Failed Getting Roles"
-        );
-      }
-
-      const permissionQuery = `
-        SELECT allow
-        FROM "Permission"
-        JOIN "RolePermissionMapping" ON "Permission".id = "RolePermissionMapping".permission_id
-        WHERE "RolePermissionMapping".role_id = $1
-      `;
-
-      const permissionResult = await datasource.query(permissionQuery, [
-        roleId,
-      ]);
-
-      if (!permissionResult.rows.length) {
-        return responseMessageInstance.getError(
-          res,
-          400,
-          "Failed Getting Permissions"
-        );
+      const dataQuery = 'SELECT password FROM "User" WHERE username = $1';
+      const dataValues = [username];
+      const dataResult = await datasource.query(dataQuery, dataValues);
+      if (!dataResult.rows[0]) {
+        return responseMessageInstance.getError(res, 404, "User not found!");
       }
       const data = {
-        userId: authResult.rows?.[0]?.id,
-        fullName: authResult.rows?.[0]?.fullname,
-        role: roleResult.rows?.[0]?.role_name,
-        permissions: permissionResult.rows,
+        id: dataResult.rows[0].id,
+        name: dataResult.rows[0].name,
       };
 
       const token = jwt.sign(data, process.env.SECRET_KEY, {
         expiresIn: "1d",
       });
-
       return responseMessageInstance.getSuccess(
         res,
         200,
         "Login Successfully",
         {
           token: { value: token, type: "Bearer" },
-          userId: authResult.rows?.[0]?.id,
         }
       );
     } catch (error) {
@@ -104,76 +91,52 @@ export class UserService {
   }
   async signup(req: Request, res: Response) {
     const { username, password, name, email }: IRegister = req.body ?? {};
+
     if (!username || !password || !name || !email) {
+      return responseMessageInstance.getError(res, 400, "Invalid Credentials");
+    }
+
+    const isValidCredentials =
+      CredentialsValidation(ETypeValidation.email, email) &&
+      CredentialsValidation(ETypeValidation.password, password) &&
+      CredentialsValidation(ETypeValidation.name, name) &&
+      CredentialsValidation(ETypeValidation.username, username);
+
+    if (!isValidCredentials) {
       return responseMessageInstance.getError(res, 400, "Invalid Credentials");
     }
 
     try {
       const authQuery =
-        'SELECT role_id,id FROM "User" WHERE username = $1 AND password = $2';
-      const authValues = [username, password];
+        'SELECT id FROM "User" WHERE username = $1 OR email = $2';
+      const authValues = [username, email];
       const authResult = await datasource.query(authQuery, authValues);
 
-      if (!authResult.rows.length) {
+      if (authResult.rows.length) {
         return responseMessageInstance.getError(
           res,
-          401,
-          "Invalid Username or Password"
+          400,
+          "Account already exists"
         );
       }
-
-      const roleId = authResult.rows?.[0]?.role_id;
-      const roleQuery = 'SELECT role_name FROM "Role" WHERE id = $1';
-      const roleResult = await datasource.query(roleQuery, [roleId]);
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const insertQuery =
+        'INSERT INTO public."User"(username, email, password, name) VALUES ($1, $2, $3, $4) RETURNING id;';
+      const insertValues = [username, email, hashedPassword, name];
+      const roleResult = await datasource.query(insertQuery, insertValues);
 
       if (!roleResult.rows.length) {
-        return responseMessageInstance.getError(
-          res,
-          400,
-          "Failed Getting Roles"
-        );
+        return responseMessageInstance.getError(res, 400, "Failed Signup");
       }
-
-      const permissionQuery = `
-        SELECT allow
-        FROM "Permission"
-        JOIN "RolePermissionMapping" ON "Permission".id = "RolePermissionMapping".permission_id
-        WHERE "RolePermissionMapping".role_id = $1
-      `;
-
-      const permissionResult = await datasource.query(permissionQuery, [
-        roleId,
-      ]);
-
-      if (!permissionResult.rows.length) {
-        return responseMessageInstance.getError(
-          res,
-          400,
-          "Failed Getting Permissions"
-        );
-      }
-      const data = {
-        userId: authResult.rows?.[0]?.id,
-        fullName: authResult.rows?.[0]?.fullname,
-        role: roleResult.rows?.[0]?.role_name,
-        permissions: permissionResult.rows,
-      };
-
-      const token = jwt.sign(data, process.env.SECRET_KEY, {
-        expiresIn: "1d",
-      });
 
       return responseMessageInstance.getSuccess(
         res,
         200,
-        "Login Successfully",
-        {
-          token: { value: token, type: "Bearer" },
-          userId: authResult.rows?.[0]?.id,
-        }
+        "Sign Up Successfully",
+        {}
       );
     } catch (error) {
-      console.error("[login]: getError", error);
+      console.error("[signup]: getError", error);
       return responseMessageInstance.getError(
         res,
         500,
