@@ -8,12 +8,13 @@ import {
   Link,
 } from "@components/layout/mui-component";
 import { ILogin } from "@/types";
-import { accountList } from "@/constants";
 import { displayToast } from "@/utils/toast";
 import { useDispatch } from "react-redux";
 import { login } from "@/slices/account";
 
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useDataProvider } from "@/hooks/useProvider";
 
 function Login() {
   const {
@@ -23,23 +24,33 @@ function Login() {
   } = useForm<ILogin>();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const onSubmit: SubmitHandler<ILogin> = (data) => {
+  const provider = useDataProvider();
+  const [isLoading, setIsloading] = useState<boolean>(false);
+  const onSubmit: SubmitHandler<ILogin> = async (data) => {
     if (!data.username || !data.password) {
       displayToast("Invalid credentials !", "error");
     } else {
-      const account = accountList.find(
-        (item) =>
-          item.username === data.username && item.password === data.password
-      );
-
-      if (account) {
-        displayToast("Login succesfully!", "success");
-        setTimeout(() => {
-          dispatch(login({ username: data.username, password: "" }));
-          navigate("/");
-        }, 3500);
-      } else {
-        displayToast("User not found !", "error");
+      setIsloading(true);
+      try {
+        const resp = await provider.post({ path: "users/sign-in", body: data });
+        if (resp.status === 200) {
+          dispatch(login(data));
+          if (sessionStorage.getItem("Bearer"))
+            sessionStorage.removeItem("Bearer");
+          sessionStorage.setItem(resp.data.token.type, resp.data.token.value);
+          displayToast(resp.data.message, "success");
+          setIsloading(false);
+          setTimeout(() => {
+            navigate("/");
+          }, 3000);
+        } else {
+          displayToast(resp.data, "error");
+          setIsloading(false);
+        }
+      } catch (error: any) {
+        console.log(error.response.data.error);
+        displayToast(error.response.data.error, "error");
+        setIsloading(false);
       }
     }
   };
@@ -117,7 +128,12 @@ function Login() {
             </Box>
             <br />
             <Box id="login-response" sx={{ marginBottom: "20px" }}></Box>
-            <Button variant="contained" color="primary" type="submit">
+            <Button
+              variant="contained"
+              color="primary"
+              disabled={isLoading}
+              type="submit"
+            >
               Login
             </Button>
             <Typography variant="body1" sx={{ marginTop: "5px" }}>

@@ -43,11 +43,19 @@ export interface IUser {
   username: string;
   isLogged: boolean;
 }
+export interface IRequestOptions {
+  baseUrl?: string;
+  path: string;
+  method?: "get" | "post" | "put" | "patch" | "delete" | "options";
+  params?: Record<string | symbol | number, any>;
+  body?: any;
+  headers?: Record<string | symbol | number, any>;
+}
 export interface ISignUp extends IUser {
-  id: number;
+  username: string;
+  password: string;
   name: string;
   email: string;
-  status: EUserStatus;
 }
 export type TTask = {
   id: number;

@@ -23,6 +23,7 @@ const accountSlice = createSlice({
       state.id = 0;
       state.username = "";
       state.isLogged = false;
+      sessionStorage.removeItem("Bearer");
     },
   },
 });

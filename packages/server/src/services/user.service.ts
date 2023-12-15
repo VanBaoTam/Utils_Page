@@ -26,6 +26,7 @@ export class UserService {
   // -----------------------------------------------
   async login(req: Request, res: Response) {
     const { username, password }: ILogin = req.body ?? {};
+    console.log("BODY", req.body);
     if (!username || !password) {
       return responseMessageInstance.getError(
         res,
@@ -50,7 +51,6 @@ export class UserService {
 
       const storedPassword = authResult.rows[0].password;
       const passwordMatch = await bcrypt.compare(password, storedPassword);
-
       if (!passwordMatch) {
         return responseMessageInstance.getError(
           res,
@@ -58,7 +58,7 @@ export class UserService {
           "Username or Password is wrong!"
         );
       }
-      const dataQuery = 'SELECT password FROM "User" WHERE username = $1';
+      const dataQuery = 'SELECT id,name FROM "User" WHERE username = $1';
       const dataValues = [username];
       const dataResult = await datasource.query(dataQuery, dataValues);
       if (!dataResult.rows[0]) {
