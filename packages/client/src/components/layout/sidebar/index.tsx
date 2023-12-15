@@ -32,7 +32,6 @@ import {
   underSideBarLinks,
 } from "@/constants";
 import Logo from "@assets/Logo.png";
-import Footer from "../footer";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/Redux/hooks";
 import { logOut } from "@/slices/account";
@@ -121,10 +120,6 @@ export default function SideBar({ children }: MainLayoutProps) {
   };
   const [auth, setAuth] = useState(true);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAuth(event.target.checked);
-  };
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -295,8 +290,7 @@ export default function SideBar({ children }: MainLayoutProps) {
         </List>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1 }}>
-        <Box sx={{ height: "82vh", p: 3 }}> {children}</Box>
-        <Footer />
+        <Box sx={{ height: "100%", p: 3 }}> {children}</Box>
       </Box>
     </Box>
   );
