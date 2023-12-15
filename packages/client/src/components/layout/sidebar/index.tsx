@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { styled, useTheme, Theme, CSSObject } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import {
@@ -11,6 +11,8 @@ import {
   ListItemIcon,
   ListItemText,
   Typography,
+  Menu,
+  MenuItem,
 } from "../mui-component";
 import MuiDrawer from "@mui/material/Drawer";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
@@ -21,8 +23,7 @@ import { GrNotes } from "react-icons/gr";
 import { IoMenu } from "react-icons/io5";
 import { MdTimer } from "react-icons/md";
 import { FiHelpCircle } from "react-icons/fi";
-// import { AiFillSetting } from "react-icons/ai";
-import { RiLogoutCircleLine, RiLoginCircleLine } from "react-icons/ri";
+import { RiAccountCircleFill } from "react-icons/ri";
 import { ReactNode } from "react";
 import {
   sideBarItems,
@@ -32,7 +33,7 @@ import {
 } from "@/constants";
 import Logo from "@assets/Logo.png";
 import Footer from "../footer";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/Redux/hooks";
 import { logOut } from "@/slices/account";
 import { displayToast } from "@/utils/toast";
@@ -112,12 +113,34 @@ const Drawer = styled(MuiDrawer, {
 export default function SideBar({ children }: MainLayoutProps) {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
   const accountSelector = useAppSelector((store) => store.account);
   const dispatch = useAppDispatch();
   const handleDrawerOpen = () => {
     setOpen(true);
   };
+  const [auth, setAuth] = useState(true);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setAuth(event.target.checked);
+  };
+
+  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const handleLogin = () => {
+    setAnchorEl(null);
+    navigate("/login");
+  };
+  const handleLogout = () => {
+    dispatch(logOut());
+    displayToast("Log out successully!", "success");
+    setAnchorEl(null);
+  };
   const handleDrawerClose = () => {
     setOpen(false);
   };
@@ -132,15 +155,49 @@ export default function SideBar({ children }: MainLayoutProps) {
             onClick={handleDrawerOpen}
             edge="start"
             sx={{
-              marginRight: 5,
               ...(open && { display: "none" }),
             }}
           >
             <IoMenu />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Utils Page
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            Utils
           </Typography>
+          {auth && (
+            <div>
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleMenu}
+                color="inherit"
+              >
+                <RiAccountCircleFill />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              >
+                {accountSelector.isLogged ? (
+                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                ) : (
+                  <MenuItem onClick={handleLogin}>Login</MenuItem>
+                )}
+              </Menu>
+            </div>
+          )}
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
@@ -227,87 +284,14 @@ export default function SideBar({ children }: MainLayoutProps) {
                       justifyContent: "center",
                     }}
                   >
-                    {(() => {
-                      switch (index) {
-                        case 0:
-                          return <FiHelpCircle />;
-                        // case 1:
-                        //   return <AiFillSetting />;
-                        case 2:
-                          return <RiLogoutCircleLine />;
-                        default:
-                          return null;
-                      }
-                    })()}
+                    <FiHelpCircle />;
                   </ListItemIcon>
                   <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
                 </ListItemButton>
               </ListItem>
             </Link>
           ))}
-          <ListItem disablePadding sx={{ display: "block" }}>
-            {accountSelector.isLogged ? (
-              <Link
-                to={"#"}
-                style={{ textDecoration: "none", color: "black" }}
-                onClick={() => {
-                  dispatch(logOut());
-                  displayToast("Log out successully!", "success");
-                }}
-              >
-                <ListItemButton
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? "initial" : "center",
-                    px: 2.5,
-                  }}
-                >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : "auto",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <RiLogoutCircleLine />;
-                  </ListItemIcon>
-
-                  <ListItemText
-                    primary={"Account"}
-                    sx={{ opacity: open ? 1 : 0 }}
-                  />
-                </ListItemButton>
-              </Link>
-            ) : (
-              <Link
-                to={"/login"}
-                style={{ textDecoration: "none", color: "black" }}
-              >
-                <ListItemButton
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? "initial" : "center",
-                    px: 2.5,
-                  }}
-                >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : "auto",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <RiLoginCircleLine />;
-                  </ListItemIcon>
-
-                  <ListItemText
-                    primary={"Account"}
-                    sx={{ opacity: open ? 1 : 0 }}
-                  />
-                </ListItemButton>
-              </Link>
-            )}
-          </ListItem>
+          <ListItem disablePadding sx={{ display: "block" }}></ListItem>
         </List>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1 }}>

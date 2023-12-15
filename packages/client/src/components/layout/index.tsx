@@ -1,6 +1,5 @@
 import { ReactNode } from "react";
 import { Box, Grid } from "./mui-component";
-import Header from "./header";
 import SideBar from "./sidebar";
 type MainLayoutProps = {
   children: ReactNode;
@@ -20,8 +19,8 @@ function MainLayout({ children }: MainLayoutProps) {
         >
           <Box>
             <Grid container>
-              <Grid item xs={12}>
-                <Header />
+              <Grid item xs={12} sx={{ height: "60px" }}>
+                TEST
               </Grid>
               <Grid item xs={12} sx={{ height: "100%", width: "100%" }}>
                 <SideBar>{children}</SideBar>
