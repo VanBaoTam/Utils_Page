@@ -62,90 +62,82 @@ function Notes() {
       <Grid item xs={3} sx={{ height: "100%" }}>
         <Box
           sx={{
+            display: "flex",
+            alignItems: "center",
+            paddingLeft: 2,
+            paddingRight: 4,
+            paddingBottom: 2,
+            borderBottom: "2px solid #eee",
+          }}
+        >
+          <Typography
+            variant="h5"
+            sx={{ fontWeight: "bold", flexGrow: 1, display: "inline-block" }}
+          >
+            NOTES
+          </Typography>
+          <Button variant="contained" onClick={handleCreateNote}>
+            ADD
+          </Button>
+        </Box>
+        <Box
+          sx={{
             borderRight: "3px solid #eee",
             height: "100%",
           }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              paddingLeft: 2,
-              marginLeft: 1,
-              paddingRight: 4,
-              paddingBottom: 2,
-              borderBottom: "2px solid #eee",
-              borderRight: "0",
-            }}
-          >
-            <Typography
-              variant="h5"
-              sx={{ fontWeight: "bold", flexGrow: 1, display: "inline-block" }}
+          {noteSelector.map((element) => (
+            <Box
+              key={element.id}
+              onClick={() => {
+                setNote(element);
+              }}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                paddingLeft: 2,
+                paddingRight: 4,
+                paddingBottom: 2,
+                paddingTop: 2,
+                overflow: "hidden",
+                borderBottom: "2px solid gray",
+              }}
             >
-              NOTES
-            </Typography>
-            <Button variant="contained" onClick={handleCreateNote}>
-              ADD
-            </Button>
-          </Box>
-          <Box
-            sx={{
-              height: "100%",
-            }}
-          >
-            {noteSelector.length > 0
-              ? noteSelector.map((element) => (
-                  <Box
-                    key={element.id}
-                    onClick={() => {
-                      setNote(element);
-                    }}
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      paddingLeft: 2,
-                      paddingRight: 4,
-                      paddingBottom: 2,
-                      paddingTop: 2,
-                      overflow: "hidden",
-                      borderBottom: "2px solid gray",
-                    }}
-                  >
-                    <Typography
-                      variant="inherit"
-                      sx={{
-                        fontWeight: "bold",
-                        flexGrow: 1,
-                        display: "inline-block",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {element.name}
-                    </Typography>
-                    <Button
-                      variant="text"
-                      sx={{
-                        bgcolor: "#D63214",
-                        color: "white",
-                        "&:hover": {
-                          bgcolor: "tomato",
-                        },
-                      }}
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        setNote(undefined);
+              <Box sx={{ display: "flex", flexFlow: "column", width: "100%" }}>
+                <Typography
+                  variant="inherit"
+                  sx={{
+                    fontWeight: "bold",
+                    flexGrow: 1,
+                    display: "inline-block",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {element.name}
+                </Typography>
+              </Box>
+              <Button
+                variant="text"
+                sx={{
+                  bgcolor: "#D63214",
+                  color: "white",
+                  "&:hover": {
+                    bgcolor: "tomato",
+                  },
+                }}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setNote(undefined);
 
-                        handleDeleteNote(element.id);
-                      }}
-                    >
-                      Delete
-                    </Button>
-                  </Box>
-                ))
-              : null}
-          </Box>
+                  handleDeleteNote(element.id);
+                }}
+              >
+                Delete
+              </Button>
+            </Box>
+          ))}
         </Box>
       </Grid>
 
