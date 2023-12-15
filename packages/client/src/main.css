@@ -1,0 +1,13 @@
+*::-webkit-scrollbar {
+      display: none;
+    }
+* {
+      -ms-overflow-style: none;  
+      scrollbar-width: none;  
+    }
+th,td{
+      border-collapse: collapse;
+    }
+    *{
+      box-sizing: border-box;
+    }
