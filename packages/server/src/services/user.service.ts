@@ -26,7 +26,6 @@ export class UserService {
   // -----------------------------------------------
   async login(req: Request, res: Response) {
     const { username, password }: ILogin = req.body ?? {};
-    console.log("BODY", req.body);
     if (!username || !password) {
       return responseMessageInstance.getError(
         res,

@@ -19,6 +19,7 @@ export class DataService {
     return responseMessageInstance.getSuccess(res, 200, "FETCHED", {});
   }
   async saveContent(req: Request, res: Response) {
+    const { path, data } = req.body ?? {};
     return responseMessageInstance.getSuccess(res, 200, "SAVED", {});
   }
   async syncContent(req: Request, res: Response) {

@@ -51,7 +51,6 @@ function Notes() {
     dispatch(deleteNote(id));
   };
   useEffect(() => {
-    console.log(note);
     if (note) {
       setContent(note?.content || "");
       setName(note?.name || "Untitled");

@@ -2,8 +2,10 @@ import { useAppDispatch, useAppSelector } from "@/Redux/hooks";
 import Notification from "@/components/modal";
 import AddingForm from "@/components/task-management/AddingForm";
 import UpdatingForm from "@/components/task-management/UpdatingForm";
+import { useDataProvider } from "@/hooks/useProvider";
 import { deleteTask } from "@/slices/task";
 import { taskCols } from "@/types";
+import { displayToast } from "@/utils/toast";
 import {
   Box,
   Button,
@@ -37,8 +39,12 @@ function Tasks() {
   const classes = useStyles();
   const dispatch = useAppDispatch();
   const taskSelector = useAppSelector((store) => store.task.list);
+  const accountSelector = useAppSelector((store) => store.account);
+  const provider = useDataProvider();
   const [ids, setIds] = useState<number[]>([]);
   const [isOpenAdd, setIsOpenAdd] = useState<boolean>(false);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [isNothing, setIsNothing] = useState<boolean>(false);
   const [update, setUpdate] = useState<boolean>(false);
   const [selectedId, setSelectedId] = useState<number>(0);
   const [isMultiSelect, setIsMultiSelect] = useState<boolean>(false);
@@ -79,6 +85,50 @@ function Tasks() {
 
     setIds(ids);
   }, []);
+  const handleSaveTask = async () => {
+    if (!accountSelector.isLogged) {
+      displayToast("You should log in to store your data!", "info");
+      setIsSaving(false);
+      return;
+    }
+    if (taskSelector.length <= 0) {
+      setIsNothing(true);
+      setTimeout(() => {
+        setIsNothing(false);
+      }, 3000);
+    } else {
+      setIsSaving(true);
+      try {
+        const token = sessionStorage.getItem("Bearer");
+        if (!token) {
+          displayToast(
+            "Invalid account's credentials, please log in again!",
+            "error"
+          );
+          setIsSaving(false);
+          return;
+        }
+        const resp = await provider.post({
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          path: "data/save-content",
+          body: { path: "tasks", data: taskSelector },
+        });
+        if (resp.status === 200) {
+          displayToast(resp.data.message, "success");
+          setIsSaving(false);
+        } else {
+          displayToast(resp.data, "error");
+          setIsSaving(false);
+        }
+      } catch (error: any) {
+        console.log(error.response.data.error);
+        displayToast(error.response.data.error, "error");
+        setIsSaving(false);
+      }
+    }
+  };
   return (
     <Box className={classes.root}>
       <Box>
@@ -90,6 +140,12 @@ function Tasks() {
         <Notification
           title="Alert Multi Selection"
           message="Please select only 1 task per operation!!!"
+        />
+      )}
+      {isNothing && (
+        <Notification
+          title="Alert Nothing To Store"
+          message="Please create at least 1 task to store!!!"
         />
       )}
       {noneIsSelected && (
@@ -151,6 +207,20 @@ function Tasks() {
           sx={{ marginX: "0.5rem" }}
         >
           Delete Task
+        </Button>
+        <Button
+          disabled={isSaving}
+          variant="contained"
+          onClick={handleSaveTask}
+          sx={{
+            bgcolor: "#4CAF50",
+            float: "right",
+            "&:hover": {
+              bgcolor: "#45a049",
+            },
+          }}
+        >
+          Save Tasks
         </Button>
       </Box>
       <DataGrid

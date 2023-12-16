@@ -76,7 +76,6 @@ function UpdatingForm(props: UpdatingFormProps) {
         break;
       }
     }
-    console.log(startedDate, notingDate, finishedDate);
     const updatedTask: TTask = {
       id: selectedId,
       user_id: selectedData?.user_id || 1,
@@ -88,7 +87,6 @@ function UpdatingForm(props: UpdatingFormProps) {
       noting_date: notingDate,
       finished_date: finishedDate,
     };
-    console.log(updatedTask);
     dispatch(updateTask(updatedTask));
     handleClose();
   };
@@ -132,7 +130,6 @@ function UpdatingForm(props: UpdatingFormProps) {
               minDateTime={minDateTime}
               onChange={(value: any) => {
                 setStartedDate(dayjs(value).toDate());
-                console.log(dayjs(value).toDate());
               }}
             />
             <br />
