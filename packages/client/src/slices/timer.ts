@@ -24,8 +24,12 @@ const timerSlice = createSlice({
         state.splice(index, 1);
       }
     },
+    loadTimersContents: (state, action: PayloadAction<TTimers[]>) => {
+      state = action.payload;
+    },
   },
 });
 
-export const { createTimer, updateTimer, deleteTimer } = timerSlice.actions;
+export const { createTimer, updateTimer, deleteTimer, loadTimersContents } =
+  timerSlice.actions;
 export default timerSlice.reducer;

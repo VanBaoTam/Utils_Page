@@ -3,7 +3,7 @@ import Notification from "@/components/modal";
 import AddingForm from "@/components/task-management/AddingForm";
 import UpdatingForm from "@/components/task-management/UpdatingForm";
 import { useDataProvider } from "@/hooks/useProvider";
-import { deleteTask } from "@/slices/task";
+import { deleteTask, loadTaskContents } from "@/slices/task";
 import { taskCols } from "@/types";
 import { displayToast } from "@/utils/toast";
 import {
@@ -44,6 +44,7 @@ function Tasks() {
   const [ids, setIds] = useState<number[]>([]);
   const [isOpenAdd, setIsOpenAdd] = useState<boolean>(false);
   const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isNothing, setIsNothing] = useState<boolean>(false);
   const [update, setUpdate] = useState<boolean>(false);
   const [selectedId, setSelectedId] = useState<number>(0);
@@ -85,6 +86,45 @@ function Tasks() {
 
     setIds(ids);
   }, []);
+  const handleLoadTask = async () => {
+    setIsLoading(true);
+    if (!accountSelector.isLogged) {
+      displayToast("You should log in to store your data!", "info");
+      setIsLoading(false);
+      return;
+    }
+    try {
+      const token = sessionStorage.getItem("Bearer");
+      if (!token) {
+        displayToast(
+          "Invalid account's credentials, please log in again!",
+          "error"
+        );
+        setIsSaving(false);
+        return;
+      }
+      const resp = await provider.get({
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        path: "tasks/load-content",
+      });
+      if (resp.status === 200) {
+        console.log(resp);
+        displayToast(resp.data.message, "success");
+        dispatch(loadTaskContents(resp.data));
+        setIsSaving(false);
+      } else {
+        displayToast(resp.data, "error");
+        setIsSaving(false);
+      }
+    } catch (error: any) {
+      console.log(error.response.data.error);
+      displayToast(error.response.data.error, "error");
+      setIsSaving(false);
+    }
+  };
+
   const handleSaveTask = async () => {
     if (!accountSelector.isLogged) {
       displayToast("You should log in to store your data!", "info");
@@ -208,6 +248,22 @@ function Tasks() {
         >
           Delete Task
         </Button>
+
+        <Button
+          disabled={isLoading}
+          variant="contained"
+          onClick={handleLoadTask}
+          sx={{
+            bgcolor: "#4CAF50",
+            float: "right",
+
+            "&:hover": {
+              bgcolor: "#45a049",
+            },
+          }}
+        >
+          Load Tasks
+        </Button>
         <Button
           disabled={isSaving}
           variant="contained"
@@ -215,6 +271,7 @@ function Tasks() {
           sx={{
             bgcolor: "#4CAF50",
             float: "right",
+            marginRight: "2rem",
             "&:hover": {
               bgcolor: "#45a049",
             },

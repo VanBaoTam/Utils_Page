@@ -41,6 +41,13 @@ export class CalendarService {
         calendarsQuery,
         calendarsValues
       );
+      if (calendarsResult.rowCount === 0) {
+        return responseMessageInstance.getError(
+          res,
+          404,
+          "You have nothing to load. "
+        );
+      }
       return responseMessageInstance.getSuccess(res, 200, "FETCHED", {
         calendars: calendarsResult.rows,
       });

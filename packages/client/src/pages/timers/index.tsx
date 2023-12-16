@@ -1,7 +1,12 @@
 import { useAppDispatch, useAppSelector } from "@/Redux/hooks";
 import { DAYS } from "@/constants";
 import { useDataProvider } from "@/hooks/useProvider";
-import { createTimer, deleteTimer, updateTimer } from "@/slices/timer";
+import {
+  createTimer,
+  deleteTimer,
+  loadTimersContents,
+  updateTimer,
+} from "@/slices/timer";
 import { ETimerStatus, TTimers } from "@/types";
 import { displayToast } from "@/utils/toast";
 import {
@@ -27,6 +32,7 @@ function Timers() {
   const [days, setDays] = useState<string[]>([]);
   const accountSelector = useAppSelector((store) => store.account);
   const provider = useDataProvider();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [repeater, setRepeater] = useState<ETimerStatus>(ETimerStatus.always);
   const [notingTime, setNotingTime] = useState<Dayjs>(dayjs());
@@ -69,6 +75,44 @@ function Timers() {
   const handleDeleteTimer = (id: number) => {
     setTimer(null);
     dispatch(deleteTimer(id));
+  };
+  const handleLoadTimers = async () => {
+    setIsLoading(true);
+    if (!accountSelector.isLogged) {
+      displayToast("You should log in to load your data!", "info");
+      setIsLoading(false);
+      return;
+    }
+    try {
+      const token = sessionStorage.getItem("Bearer");
+      if (!token) {
+        displayToast(
+          "Invalid account's credentials, please log in again!",
+          "error"
+        );
+        setIsSaving(false);
+        return;
+      }
+      const resp = await provider.get({
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        path: "notes/load-content",
+      });
+      if (resp.status === 200) {
+        console.log(resp);
+        displayToast(resp.data.message, "success");
+        dispatch(loadTimersContents(resp.data));
+        setIsSaving(false);
+      } else {
+        displayToast(resp.data, "error");
+        setIsSaving(false);
+      }
+    } catch (error: any) {
+      console.log(error.response.data.error);
+      displayToast(error.response.data.error, "error");
+      setIsSaving(false);
+    }
   };
   const handleSaveTimers = async () => {
     if (!accountSelector.isLogged) {
@@ -127,8 +171,8 @@ function Timers() {
           sx={{
             display: "flex",
             alignItems: "center",
-            paddingLeft: 2,
-            paddingRight: 4,
+            paddingLeft: 1,
+            paddingRight: 2,
             paddingBottom: 2,
             borderBottom: "2px solid #eee",
           }}
@@ -139,28 +183,48 @@ function Timers() {
           >
             TIMERS
           </Typography>
-          <Button variant="contained" onClick={handleCreateTimer}>
+          <Button
+            variant="contained"
+            onClick={handleCreateTimer}
+            sx={{ marginLeft: "1rem" }}
+          >
             ADD
           </Button>
-          <Button
-            disabled={isSaving}
-            variant="contained"
-            onClick={handleSaveTimers}
-            sx={{
-              bgcolor: "#4CAF50",
-              marginLeft: "1rem",
-              "&:hover": {
-                bgcolor: "#45a049",
-              },
-            }}
-          >
-            Save Timers
-          </Button>
+          <Box sx={{ paddingLeft: "1rem" }}>
+            <Button
+              disabled={isLoading}
+              variant="contained"
+              onClick={handleLoadTimers}
+              sx={{
+                bgcolor: "#4CAF50",
+                marginBottom: "1rem",
+                "&:hover": {
+                  bgcolor: "#45a049",
+                },
+              }}
+            >
+              Load Timers
+            </Button>
+            <Button
+              disabled={isSaving}
+              variant="contained"
+              onClick={handleSaveTimers}
+              sx={{
+                bgcolor: "#4CAF50",
+
+                "&:hover": {
+                  bgcolor: "#45a049",
+                },
+              }}
+            >
+              Save Timers
+            </Button>
+          </Box>
         </Box>
         <Box
           sx={{
             borderRight: "3px solid #eee",
-            maxHeight: "82vh",
+            maxHeight: "72vh",
             overflow: "auto",
           }}
         >

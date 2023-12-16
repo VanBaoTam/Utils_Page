@@ -3,6 +3,7 @@ import { useDataProvider } from "@/hooks/useProvider";
 import {
   createCalendar,
   deleteCalendar,
+  loadCalendarsContents,
   updateCalendar,
 } from "@/slices/calendar";
 import { TCalendars } from "@/types";
@@ -25,6 +26,7 @@ function Calendars() {
   const accountSelector = useAppSelector((store) => store.account);
   const provider = useDataProvider();
   const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [notingTime, setNotingTime] = useState<Dayjs>(dayjs());
   const [notification, setNotification] = useState<string>("Unknown");
 
@@ -52,6 +54,44 @@ function Calendars() {
   const handleDeleteCalendar = (id: number) => {
     setCalendar(null);
     dispatch(deleteCalendar(id));
+  };
+  const handleLoadCalendars = async () => {
+    setIsLoading(true);
+    if (!accountSelector.isLogged) {
+      displayToast("You should log in to load your data!", "info");
+      setIsLoading(false);
+      return;
+    }
+    try {
+      const token = sessionStorage.getItem("Bearer");
+      if (!token) {
+        displayToast(
+          "Invalid account's credentials, please log in again!",
+          "error"
+        );
+        setIsSaving(false);
+        return;
+      }
+      const resp = await provider.get({
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        path: "notes/load-content",
+      });
+      if (resp.status === 200) {
+        console.log(resp);
+        displayToast(resp.data.message, "success");
+        dispatch(loadCalendarsContents(resp.data));
+        setIsSaving(false);
+      } else {
+        displayToast(resp.data, "error");
+        setIsSaving(false);
+      }
+    } catch (error: any) {
+      console.log(error.response.data.error);
+      displayToast(error.response.data.error, "error");
+      setIsSaving(false);
+    }
   };
   const handleSaveCalendars = async () => {
     if (!accountSelector.isLogged) {
@@ -115,8 +155,6 @@ function Calendars() {
           sx={{
             display: "flex",
             alignItems: "center",
-            paddingLeft: 2,
-            paddingRight: 4,
             paddingBottom: 2,
             borderBottom: "2px solid #eee",
           }}
@@ -125,30 +163,50 @@ function Calendars() {
             variant="h5"
             sx={{ fontWeight: "bold", flexGrow: 1, display: "inline-block" }}
           >
-            CALENDARS
+            CALENDAR
           </Typography>
-          <Button variant="contained" onClick={handleCreateCalendar}>
+          <Button
+            variant="contained"
+            onClick={handleCreateCalendar}
+            sx={{ marginLeft: "1rem" }}
+          >
             ADD
           </Button>
-          <Button
-            disabled={isSaving}
-            variant="contained"
-            onClick={handleSaveCalendars}
-            sx={{
-              bgcolor: "#4CAF50",
-              marginLeft: "1rem",
-              "&:hover": {
-                bgcolor: "#45a049",
-              },
-            }}
-          >
-            Save Days
-          </Button>
+          <Box sx={{ paddingLeft: "1rem" }}>
+            <Button
+              disabled={isLoading}
+              variant="contained"
+              onClick={handleLoadCalendars}
+              sx={{
+                bgcolor: "#4CAF50",
+                marginBottom: "1rem",
+                "&:hover": {
+                  bgcolor: "#45a049",
+                },
+              }}
+            >
+              Load Days
+            </Button>
+            <Button
+              disabled={isSaving}
+              variant="contained"
+              onClick={handleSaveCalendars}
+              sx={{
+                bgcolor: "#4CAF50",
+
+                "&:hover": {
+                  bgcolor: "#45a049",
+                },
+              }}
+            >
+              Save Days
+            </Button>
+          </Box>
         </Box>
         <Box
           sx={{
             borderRight: "3px solid #eee",
-            maxHeight: "82vh",
+            maxHeight: "72vh",
             overflow: "auto",
           }}
         >

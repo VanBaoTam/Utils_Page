@@ -34,8 +34,12 @@ const taskSlice = createSlice({
         state.list.splice(index, 1);
       }
     },
+    loadTaskContents: (state, action: PayloadAction<TTask[]>) => {
+      state.list = action.payload;
+    },
   },
 });
 
-export const { createTask, updateTask, deleteTask } = taskSlice.actions;
+export const { createTask, updateTask, deleteTask, loadTaskContents } =
+  taskSlice.actions;
 export default taskSlice.reducer;

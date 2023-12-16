@@ -38,6 +38,13 @@ export class TaskService {
       const tasksQuery = 'SELECT * FROM "Tasks" WHERE user_id = $1';
       const tasksValues = [id];
       const tasksResult = await datasource.query(tasksQuery, tasksValues);
+      if (tasksResult.rowCount === 0) {
+        return responseMessageInstance.getError(
+          res,
+          404,
+          "You have nothing to load. "
+        );
+      }
       return responseMessageInstance.getSuccess(res, 200, "FETCHED", {
         tasks: tasksResult.rows,
       });

@@ -38,6 +38,13 @@ export class NoteService {
       const notesQuery = 'SELECT * FROM "Notes" WHERE user_id = $1';
       const notesValues = [id];
       const notesResult = await datasource.query(notesQuery, notesValues);
+      if (notesResult.rowCount === 0) {
+        return responseMessageInstance.getError(
+          res,
+          404,
+          "You have nothing to load. "
+        );
+      }
       return responseMessageInstance.getSuccess(res, 200, "FETCHED NOTES", {
         notes: notesResult.rows,
       });

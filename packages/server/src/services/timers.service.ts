@@ -38,6 +38,13 @@ export class TimerService {
       const timersQuery = 'SELECT * FROM "Timers" WHERE user_id = $1';
       const timersValues = [id];
       const timersResult = await datasource.query(timersQuery, timersValues);
+      if (timersResult.rowCount === 0) {
+        return responseMessageInstance.getError(
+          res,
+          404,
+          "You have nothing to load. "
+        );
+      }
       return responseMessageInstance.getSuccess(res, 200, "FETCHED", {
         timers: timersResult.rows,
       });

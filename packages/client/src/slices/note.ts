@@ -25,8 +25,12 @@ const noteSlice = createSlice({
         state.splice(index, 1);
       }
     },
+    loadNoteContents: (state, action: PayloadAction<TNote[]>) => {
+      state = action.payload;
+    },
   },
 });
 
-export const { createNote, updateNote, deleteNote } = noteSlice.actions;
+export const { createNote, updateNote, deleteNote, loadNoteContents } =
+  noteSlice.actions;
 export default noteSlice.reducer;

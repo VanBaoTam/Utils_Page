@@ -28,9 +28,16 @@ const calendarSlice = createSlice({
         state.splice(index, 1);
       }
     },
+    loadCalendarsContents: (state, action: PayloadAction<TCalendars[]>) => {
+      state = action.payload;
+    },
   },
 });
 
-export const { createCalendar, updateCalendar, deleteCalendar } =
-  calendarSlice.actions;
+export const {
+  createCalendar,
+  updateCalendar,
+  deleteCalendar,
+  loadCalendarsContents,
+} = calendarSlice.actions;
 export default calendarSlice.reducer;
