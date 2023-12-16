@@ -62,7 +62,7 @@ function Notes() {
       return;
     }
     if (noteSelector.length <= 0) {
-      displayToast("Please create at least 1 task to store!!!", "info");
+      displayToast("Please create at least 1 note to store!!!", "info");
     } else {
       setIsSaving(true);
       try {

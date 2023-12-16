@@ -1,7 +1,9 @@
 import { useAppDispatch, useAppSelector } from "@/Redux/hooks";
 import { DAYS } from "@/constants";
+import { useDataProvider } from "@/hooks/useProvider";
 import { createTimer, deleteTimer, updateTimer } from "@/slices/timer";
 import { ETimerStatus, TTimers } from "@/types";
+import { displayToast } from "@/utils/toast";
 import {
   Box,
   Button,
@@ -23,6 +25,9 @@ function Timers() {
   const [timer, setTimer] = useState<TTimers | null>(null);
   const [title, setTitle] = useState<string>("");
   const [days, setDays] = useState<string[]>([]);
+  const accountSelector = useAppSelector((store) => store.account);
+  const provider = useDataProvider();
+  const [isSaving, setIsSaving] = useState<boolean>(false);
   const [repeater, setRepeater] = useState<ETimerStatus>(ETimerStatus.always);
   const [notingTime, setNotingTime] = useState<Dayjs>(dayjs());
   const dispatch = useAppDispatch();
@@ -65,7 +70,47 @@ function Timers() {
     setTimer(null);
     dispatch(deleteTimer(id));
   };
-
+  const handleSaveTimers = async () => {
+    if (!accountSelector.isLogged) {
+      displayToast("You should log in to store your data!", "info");
+      setIsSaving(false);
+      return;
+    }
+    if (timerSelector.length <= 0) {
+      displayToast("Please create at least 1 timers to store!!!", "info");
+    } else {
+      setIsSaving(true);
+      try {
+        const token = sessionStorage.getItem("Bearer");
+        if (!token) {
+          displayToast(
+            "Invalid account's credentials, please log in again!",
+            "error"
+          );
+          setIsSaving(false);
+          return;
+        }
+        const resp = await provider.post({
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          path: "timers/save-content",
+          body: { data: timerSelector },
+        });
+        if (resp.status === 200) {
+          displayToast(resp.data.message, "success");
+          setIsSaving(false);
+        } else {
+          displayToast(resp.data, "error");
+          setIsSaving(false);
+        }
+      } catch (error: any) {
+        console.log(error.response.data.error);
+        displayToast(error.response.data.error, "error");
+        setIsSaving(false);
+      }
+    }
+  };
   useEffect(() => {
     if (timer) {
       const convertedTime = dayjs(timer.noting_time, "HH:mm");
@@ -96,6 +141,20 @@ function Timers() {
           </Typography>
           <Button variant="contained" onClick={handleCreateTimer}>
             ADD
+          </Button>
+          <Button
+            disabled={isSaving}
+            variant="contained"
+            onClick={handleSaveTimers}
+            sx={{
+              bgcolor: "#4CAF50",
+              marginLeft: "1rem",
+              "&:hover": {
+                bgcolor: "#45a049",
+              },
+            }}
+          >
+            Save Timers
           </Button>
         </Box>
         <Box

@@ -1,10 +1,12 @@
 import { useAppDispatch, useAppSelector } from "@/Redux/hooks";
+import { useDataProvider } from "@/hooks/useProvider";
 import {
   createCalendar,
   deleteCalendar,
   updateCalendar,
 } from "@/slices/calendar";
 import { TCalendars } from "@/types";
+import { displayToast } from "@/utils/toast";
 import {
   Box,
   Button,
@@ -20,6 +22,9 @@ function Calendars() {
   const dispatch = useAppDispatch();
   const calendarSelector = useAppSelector((store) => store.calendar);
   const [calendar, setCalendar] = useState<TCalendars | null>(null);
+  const accountSelector = useAppSelector((store) => store.account);
+  const provider = useDataProvider();
+  const [isSaving, setIsSaving] = useState<boolean>(false);
   const [notingTime, setNotingTime] = useState<Dayjs>(dayjs());
   const [notification, setNotification] = useState<string>("Unknown");
 
@@ -48,7 +53,47 @@ function Calendars() {
     setCalendar(null);
     dispatch(deleteCalendar(id));
   };
-
+  const handleSaveCalendars = async () => {
+    if (!accountSelector.isLogged) {
+      displayToast("You should log in to store your data!", "info");
+      setIsSaving(false);
+      return;
+    }
+    if (calendarSelector.length <= 0) {
+      displayToast("Please create at least 1 day to store!!!", "info");
+    } else {
+      setIsSaving(true);
+      try {
+        const token = sessionStorage.getItem("Bearer");
+        if (!token) {
+          displayToast(
+            "Invalid account's credentials, please log in again!",
+            "error"
+          );
+          setIsSaving(false);
+          return;
+        }
+        const resp = await provider.post({
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          path: "calendars/save-content",
+          body: { data: calendar },
+        });
+        if (resp.status === 200) {
+          displayToast(resp.data.message, "success");
+          setIsSaving(false);
+        } else {
+          displayToast(resp.data, "error");
+          setIsSaving(false);
+        }
+      } catch (error: any) {
+        console.log(error.response.data.error);
+        displayToast(error.response.data.error, "error");
+        setIsSaving(false);
+      }
+    }
+  };
   useEffect(() => {
     if (calendar) {
       const formattedDate = dayjs(calendar.choosen_date, "DD / MM / YYYY");
@@ -84,6 +129,20 @@ function Calendars() {
           </Typography>
           <Button variant="contained" onClick={handleCreateCalendar}>
             ADD
+          </Button>
+          <Button
+            disabled={isSaving}
+            variant="contained"
+            onClick={handleSaveCalendars}
+            sx={{
+              bgcolor: "#4CAF50",
+              marginLeft: "1rem",
+              "&:hover": {
+                bgcolor: "#45a049",
+              },
+            }}
+          >
+            Save Days
           </Button>
         </Box>
         <Box
