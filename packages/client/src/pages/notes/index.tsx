@@ -124,11 +124,26 @@ function Notes() {
           <Button variant="contained" onClick={handleCreateNote}>
             ADD
           </Button>
+          <Button
+            disabled={isSaving}
+            variant="contained"
+            onClick={handleSaveNote}
+            sx={{
+              bgcolor: "#4CAF50",
+              marginLeft: "1rem",
+              "&:hover": {
+                bgcolor: "#45a049",
+              },
+            }}
+          >
+            Save Notes
+          </Button>
         </Box>
         <Box
           sx={{
             borderRight: "3px solid #eee",
-            height: "100%",
+            maxHeight: "82vh",
+            overflow: "auto",
           }}
         >
           {noteSelector.map((element) => (

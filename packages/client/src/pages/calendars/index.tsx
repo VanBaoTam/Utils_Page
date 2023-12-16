@@ -89,7 +89,8 @@ function Calendars() {
         <Box
           sx={{
             borderRight: "3px solid #eee",
-            height: "100%",
+            maxHeight: "82vh",
+            overflow: "auto",
           }}
         >
           {calendarSelector.map((element) => (
