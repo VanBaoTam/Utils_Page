@@ -16,6 +16,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Toast from "./components/layout/toast";
 import { Provider } from "react-redux";
 import { store } from "./Redux/store";
+import ProtectedRoutes from "./routes/protected-routes";
 declare module "@mui/material/styles" {
   interface Theme {
     status: {
@@ -29,6 +30,7 @@ declare module "@mui/material/styles" {
   }
 }
 const theme = createTheme({});
+
 function App() {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -40,8 +42,15 @@ function App() {
             <MainLayout>
               <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/tasks" element={<Tasks />}></Route>
-                <Route path="/login" element={<Login />} />
+                <Route path="/tasks" element={<Tasks />} />
+                <Route
+                  path="/login"
+                  element={
+                    <ProtectedRoutes>
+                      <Login />
+                    </ProtectedRoutes>
+                  }
+                />
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/notes" element={<Notes />} />
                 <Route path="/timers" element={<Timers />} />
