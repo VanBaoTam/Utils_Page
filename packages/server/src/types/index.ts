@@ -10,10 +10,3 @@ export enum ETasksStatus {
   finished = "finished",
   expired = "expired",
 }
-
-export enum EDataPaths {
-  tasks = "tasks",
-  notes = "notes",
-  timers = "timers",
-  calendars = "calendars",
-}

@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import { Request, Response } from "express";
 import { responseMessageInstance } from "../utils";
-import { EDataPaths, authPayload } from "../types";
+import { authPayload } from "../types";
 import jwt from "jsonwebtoken";
 import { datasource } from "../datasource";
 dotenv.config();
@@ -52,7 +52,7 @@ export class TimerService {
   }
 
   async saveContent(req: Request, res: Response) {
-    const { path, data } = req.body ?? {};
+    const { data } = req.body ?? {};
     const authorizationHeader = req.headers["authorization"] ?? "";
     const token = authorizationHeader.split(" ")[1];
     let id: number;
@@ -71,24 +71,8 @@ export class TimerService {
       id = payload.id;
     });
 
-    if (!data || !path) {
-      return responseMessageInstance.getError(
-        res,
-        400,
-        "Invalid data or path!"
-      );
-    }
-
-    if (
-      path === EDataPaths.notes ||
-      path === EDataPaths.tasks ||
-      path === EDataPaths.calendars
-    ) {
-      return responseMessageInstance.getError(
-        res,
-        400,
-        "Invalid data or path!"
-      );
+    if (!data) {
+      return responseMessageInstance.getError(res, 400, "Invalid data!");
     }
 
     if (!Array.isArray(data) || data.length === 0) {

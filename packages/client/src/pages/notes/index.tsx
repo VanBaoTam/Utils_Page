@@ -9,10 +9,15 @@ import { useEffect, useState } from "react";
 import { TNote } from "@/types";
 import { useAppDispatch, useAppSelector } from "@/Redux/hooks";
 import { createNote, deleteNote, updateNote } from "@/slices/note";
+import { displayToast } from "@/utils/toast";
+import { useDataProvider } from "@/hooks/useProvider";
 function Notes() {
   const [content, setContent] = useState<string>("");
   const [name, setName] = useState<string>("");
   const noteSelector = useAppSelector((store) => store.note);
+  const accountSelector = useAppSelector((store) => store.account);
+  const provider = useDataProvider();
+  const [isSaving, setIsSaving] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const [note, setNote] = useState<TNote | undefined>(undefined);
   const handleTextareaChange = (event: any) => {
@@ -49,6 +54,47 @@ function Notes() {
       setNote(undefined);
     }
     dispatch(deleteNote(id));
+  };
+  const handleSaveNote = async () => {
+    if (!accountSelector.isLogged) {
+      displayToast("You should log in to store your data!", "info");
+      setIsSaving(false);
+      return;
+    }
+    if (noteSelector.length <= 0) {
+      displayToast("Please create at least 1 task to store!!!", "info");
+    } else {
+      setIsSaving(true);
+      try {
+        const token = sessionStorage.getItem("Bearer");
+        if (!token) {
+          displayToast(
+            "Invalid account's credentials, please log in again!",
+            "error"
+          );
+          setIsSaving(false);
+          return;
+        }
+        const resp = await provider.post({
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          path: "notes/save-content",
+          body: { data: noteSelector },
+        });
+        if (resp.status === 200) {
+          displayToast(resp.data.message, "success");
+          setIsSaving(false);
+        } else {
+          displayToast(resp.data, "error");
+          setIsSaving(false);
+        }
+      } catch (error: any) {
+        console.log(error.response.data.error);
+        displayToast(error.response.data.error, "error");
+        setIsSaving(false);
+      }
+    }
   };
   useEffect(() => {
     if (note) {

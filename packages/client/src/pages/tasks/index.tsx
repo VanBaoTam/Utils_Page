@@ -112,8 +112,8 @@ function Tasks() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-          path: "data/save-content",
-          body: { path: "tasks", data: taskSelector },
+          path: "tasks/save-content",
+          body: { data: taskSelector },
         });
         if (resp.status === 200) {
           displayToast(resp.data.message, "success");
