@@ -19,6 +19,7 @@ import { store } from "./Redux/store";
 import ProtectedRoutes from "./routes/protected-routes";
 import Profile from "./pages/account/profile";
 import LoggedRoutes from "./routes/logged-routes";
+
 declare module "@mui/material/styles" {
   interface Theme {
     status: {

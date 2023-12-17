@@ -39,7 +39,7 @@ function UpdatingForm(props: UpdatingFormProps) {
   const [startedDate, setStartedDate] = useState<any>();
   const [notingDate, setNotingDate] = useState<any>();
   const [finishedDate, setFinishedDate] = useState<any>();
-  const minDateTime = dayjs().subtract(3, "minute");
+  const minDateTime = dayjs().subtract(1, "minute");
   //-----------------------------------------
   //* Funcs
   const onSubmit = (data: TaskFormData) => {

@@ -1,5 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { TTimers } from "@/types";
+import { displayToastPernament } from "@/utils/toast";
+import { DAYS } from "@/constants";
 const initialState: TTimers[] = [];
 
 const timerSlice = createSlice({
@@ -28,9 +30,39 @@ const timerSlice = createSlice({
       state.length = 0;
       state.push(...action.payload);
     },
+    checkNotifTimer: (state) => {
+      const currentDay = new Date().getDay();
+      const currentHour = new Date().getHours();
+      const currentMinute = new Date().getMinutes();
+      console.log("RUNNING TIMERS");
+      state.forEach((element) => {
+        const choosenDays = element.choosen_days.map((day) => day.trim());
+
+        if (!choosenDays.includes(DAYS[currentDay])) return;
+
+        const [hour, minute] = element.noting_time.split(":").map(Number);
+
+        if (
+          currentHour < hour ||
+          (currentHour === hour && currentMinute < minute)
+        ) {
+          return;
+        }
+
+        displayToastPernament(
+          `TIMER ${element.title} is at the noting time`,
+          "warning"
+        );
+      });
+    },
   },
 });
 
-export const { createTimer, updateTimer, deleteTimer, loadTimersContents } =
-  timerSlice.actions;
+export const {
+  createTimer,
+  updateTimer,
+  deleteTimer,
+  loadTimersContents,
+  checkNotifTimer,
+} = timerSlice.actions;
 export default timerSlice.reducer;
