@@ -13,9 +13,9 @@ import { useDispatch } from "react-redux";
 import { useDataProvider } from "@/hooks/useProvider";
 
 interface IProfile {
-  username: string;
+  name: string;
   password: string;
-  email: string;
+  re_password: string;
 }
 
 function Profile() {
@@ -24,25 +24,39 @@ function Profile() {
     handleSubmit,
     formState: { errors },
   } = useForm<IProfile>();
-  const dispatch = useDispatch();
   const provider = useDataProvider();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const onSubmit: SubmitHandler<IProfile> = async (data) => {
+    if (data.password !== data.re_password) {
+      displayToast("Confirm password not matchs", "error");
+      return;
+    }
     setIsLoading(true);
     try {
+      const token = sessionStorage.getItem("Bearer");
+      if (!token) {
+        displayToast(
+          "Invalid account's credentials, please log in again!",
+          "error"
+        );
+        setIsLoading(false);
+        return;
+      }
       const resp = await provider.post({
-        path: "users/update-profile",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        path: "users/change-profile",
         body: data,
       });
-
       if (resp.status === 200) {
         displayToast(resp.data.message, "success");
       } else {
         displayToast(resp.data, "error");
       }
     } catch (error: any) {
-      console.log(error.response.data.error);
+      console.log(error.response);
       displayToast(error.response.data.error, "error");
     } finally {
       setIsLoading(false);
@@ -57,7 +71,7 @@ function Profile() {
     >
       <Container>
         <Box>
-          <Typography variant="h3">Profile</Typography>
+          <Typography variant="h3">Change Profile</Typography>
         </Box>
         <form id="profile-form" onSubmit={handleSubmit(onSubmit)}>
           <Box
@@ -71,47 +85,26 @@ function Profile() {
           >
             <Box sx={{ marginBottom: "20px" }}>
               <TextField
-                label="Username"
+                label="Name"
                 fullWidth
                 type="text"
                 required
                 margin="normal"
-                {...register("username", {
-                  required: "Username is required",
+                {...register("name", {
+                  required: "Name is required",
                   minLength: {
-                    value: 3,
-                    message: "Invalid Username",
+                    value: 4,
+                    message: "Name is too short",
                   },
                   maxLength: {
-                    value: 30,
-                    message: "Invalid Username",
+                    value: 50,
+                    message: "Name is too long",
                   },
                 })}
               />
-              {errors.username && (
+              {errors.name && (
                 <Typography variant="body2" color="error">
-                  {errors.username.message}
-                </Typography>
-              )}
-            </Box>
-            <Box sx={{ marginBottom: "20px" }}>
-              <TextField
-                label="Email"
-                fullWidth
-                type="email"
-                required
-                margin="normal"
-                {...register("email", {
-                  required: "Email is required",
-                  pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                    message: "Invalid email address",
-                  },
-                })}
-              />
-              {errors.email && (
-                <Typography variant="body2" color="error">
-                  {errors.email.message}
+                  {errors.name.message}
                 </Typography>
               )}
             </Box>
@@ -122,16 +115,15 @@ function Profile() {
                 type="password"
                 required
                 autoComplete=""
-                margin="normal"
                 {...register("password", {
                   required: "Password is required",
                   minLength: {
                     value: 6,
-                    message: "Invalid Password",
+                    message: "Password is too short",
                   },
                   maxLength: {
                     value: 50,
-                    message: "Invalid Password",
+                    message: "Password is too long",
                   },
                 })}
               />
@@ -142,6 +134,23 @@ function Profile() {
               )}
             </Box>
             <br />
+            <Box>
+              <TextField
+                label="Confirm password"
+                fullWidth
+                type="password"
+                required
+                autoComplete=""
+                {...register("re_password", {
+                  required: "Confirm password is required",
+                })}
+              />
+              {errors.re_password && (
+                <Typography variant="body2" color="error">
+                  {errors.re_password.message}
+                </Typography>
+              )}
+            </Box>
             <Box id="profile-response" sx={{ marginBottom: "20px" }}></Box>
             <Button
               variant="contained"

@@ -4,7 +4,7 @@ export const DATE_FORMAT = "DD-MM-YYYY";
 export const TIMEZONE = "Asia/Ho_Chi_Minh";
 const USERNAME_FORMAT = /^[a-zA-Z0-9_]{4,30}$/;
 const PASSWORD_FORMAT = /^.{6,50}$/;
-const NAME_FORMAT = /^[a-zA-Z0-9_]{4,30}$/;
+const NAME_FORMAT = /^[a-zA-Z0-9_ ]{4,30}$/;
 const EMAIL_FORMAT = /^[^\s@]+@[^\s@]+\.[^\s@]{2,30}$/;
 export function CredentialsValidation(type: string, value: string) {
   switch (type) {

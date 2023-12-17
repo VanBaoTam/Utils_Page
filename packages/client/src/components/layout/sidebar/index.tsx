@@ -186,18 +186,23 @@ export default function SideBar({ children }: MainLayoutProps) {
                 onClose={handleClose}
               >
                 {accountSelector.isLogged ? (
-                  <React.Fragment>
+                  [
                     <MenuItem
+                      key="profile"
                       onClick={() => {
                         navigate("/profile");
                       }}
                     >
                       Profile
-                    </MenuItem>
-                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                  </React.Fragment>
+                    </MenuItem>,
+                    <MenuItem key="logout" onClick={handleLogout}>
+                      Logout
+                    </MenuItem>,
+                  ]
                 ) : (
-                  <MenuItem onClick={handleLogin}>Login</MenuItem>
+                  <MenuItem key="login" onClick={handleLogin}>
+                    Login
+                  </MenuItem>
                 )}
               </Menu>
             </div>

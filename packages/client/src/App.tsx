@@ -18,6 +18,7 @@ import { Provider } from "react-redux";
 import { store } from "./Redux/store";
 import ProtectedRoutes from "./routes/protected-routes";
 import Profile from "./pages/account/profile";
+import LoggedRoutes from "./routes/logged-routes";
 declare module "@mui/material/styles" {
   interface Theme {
     status: {
@@ -53,7 +54,14 @@ function App() {
                   }
                 />
                 <Route path="/signup" element={<SignUp />} />
-                <Route path="/profile" element={<Profile />} />
+                <Route
+                  path="/profile"
+                  element={
+                    <LoggedRoutes>
+                      <Profile />
+                    </LoggedRoutes>
+                  }
+                />
                 <Route path="/notes" element={<Notes />} />
                 <Route path="/timers" element={<Timers />} />
                 <Route path="/calendars" element={<Calendars />} />
