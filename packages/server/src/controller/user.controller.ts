@@ -20,6 +20,15 @@ export class UserController {
   async signup(req: Request, res: Response) {
     return await userServiceInstance.signup(req, res);
   }
+  async forgotPassword(req: Request, res: Response) {
+    return await userServiceInstance.forgotPassword(req, res);
+  }
+  async changeProfile(req: Request, res: Response) {
+    return await userServiceInstance.changeProfile(req, res);
+  }
+  async updatePassword(req: Request, res: Response) {
+    return await userServiceInstance.updatePassword(req, res);
+  }
 }
 
 //------------------------------------------------
