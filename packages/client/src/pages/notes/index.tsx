@@ -87,7 +87,6 @@ function Notes() {
         path: "notes/load-content",
       });
       if (resp.status === 200) {
-        console.log(resp);
         displayToast(resp.data.message, "success");
         dispatch(loadNoteContents(resp.data.notes));
         setIsLoading(false);

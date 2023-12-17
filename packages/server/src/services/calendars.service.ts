@@ -69,7 +69,6 @@ export class CalendarService {
 
   async saveContent(req: Request, res: Response) {
     const { data } = req.body ?? {};
-    console.log(data);
     const authorizationHeader = req.headers["authorization"] ?? "";
     const token = authorizationHeader.split(" ")[1];
     let id: number;

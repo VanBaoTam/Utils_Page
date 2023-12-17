@@ -43,6 +43,17 @@ function UpdatingForm(props: UpdatingFormProps) {
   //-----------------------------------------
   //* Funcs
   const onSubmit = (data: TaskFormData) => {
+    if (
+      notingDate < dayjs().toDate() ||
+      startedDate < dayjs().toDate() ||
+      finishedDate < dayjs().toDate()
+    ) {
+      displayToast(
+        "Please make sure All the dates must be equal current date or later",
+        "error"
+      );
+      return;
+    }
     if (notingDate <= startedDate) {
       displayToast(
         "Please make sure Noting Date is later than Started Date",
@@ -58,7 +69,7 @@ function UpdatingForm(props: UpdatingFormProps) {
       return;
     }
     let EStatus;
-    switch (data.status) {
+    switch (status) {
       case ETasksStatus.active: {
         EStatus = ETasksStatus.active;
         break;
@@ -165,6 +176,9 @@ function UpdatingForm(props: UpdatingFormProps) {
                 <MenuItem value={ETasksStatus.active}>Active</MenuItem>
                 <MenuItem value={ETasksStatus.suspended}>Suspended</MenuItem>
                 <MenuItem value={ETasksStatus.finished}>Finished</MenuItem>
+                <MenuItem disabled value={ETasksStatus.expired}>
+                  Expired
+                </MenuItem>
               </Select>
             </FormControl>
             <TextField

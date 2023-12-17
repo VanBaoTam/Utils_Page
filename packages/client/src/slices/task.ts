@@ -1,5 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { TTask } from "@/types";
+import { ETasksStatus, TTask } from "@/types";
+import dayjs from "dayjs";
 
 interface TaskState {
   ids: number;
@@ -39,9 +40,21 @@ const taskSlice = createSlice({
     loadTaskContents: (state, action: PayloadAction<TTask[]>) => {
       state.list = action.payload;
     },
+    checkStatus: (state) => {
+      state.list.forEach((element) => {
+        if (dayjs(element.finished_date).toDate() < new Date()) {
+          element.status = ETasksStatus.expired;
+        }
+      });
+    },
   },
 });
 
-export const { createTask, updateTask, deleteTask, loadTaskContents } =
-  taskSlice.actions;
+export const {
+  createTask,
+  updateTask,
+  deleteTask,
+  loadTaskContents,
+  checkStatus,
+} = taskSlice.actions;
 export default taskSlice.reducer;

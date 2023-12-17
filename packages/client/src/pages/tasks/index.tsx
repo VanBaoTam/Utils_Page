@@ -1,9 +1,8 @@
 import { useAppDispatch, useAppSelector } from "@/Redux/hooks";
-import Notification from "@/components/modal";
 import AddingForm from "@/components/task-management/AddingForm";
 import UpdatingForm from "@/components/task-management/UpdatingForm";
 import { useDataProvider } from "@/hooks/useProvider";
-import { deleteTask, loadTaskContents } from "@/slices/task";
+import { checkStatus, deleteTask, loadTaskContents } from "@/slices/task";
 import { taskCols } from "@/types";
 import { displayToast } from "@/utils/toast";
 import {
@@ -16,7 +15,7 @@ import {
   Typography,
 } from "@components/layout/mui-component";
 import { DialogContent } from "@mui/material";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 enum EType {
   update = "update",
   delete = "delete",
@@ -45,11 +44,8 @@ function Tasks() {
   const [isOpenAdd, setIsOpenAdd] = useState<boolean>(false);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isNothing, setIsNothing] = useState<boolean>(false);
   const [update, setUpdate] = useState<boolean>(false);
   const [selectedId, setSelectedId] = useState<number>(0);
-  const [isMultiSelect, setIsMultiSelect] = useState<boolean>(false);
-  const [noneIsSelected, setNoneIsSelected] = useState<boolean>(false);
   const handleCloseAdd = useCallback(() => {
     setIsOpenAdd(false);
   }, []);
@@ -66,15 +62,9 @@ function Tasks() {
           dispatch(deleteTask(ids[0]));
         }
       } else if (ids.length > 1) {
-        setIsMultiSelect(true);
-        setTimeout(() => {
-          setIsMultiSelect(false);
-        }, 5000);
+        displayToast("Please select only 1 task per operation!!!", "error");
       } else {
-        setNoneIsSelected(true);
-        setTimeout(() => {
-          setNoneIsSelected(false);
-        }, 5000);
+        displayToast("Please select 1 task!!!", "error");
       }
     },
     [ids]
@@ -110,7 +100,6 @@ function Tasks() {
         path: "tasks/load-content",
       });
       if (resp.status === 200) {
-        console.log(resp);
         displayToast(resp.data.message, "success");
         dispatch(loadTaskContents(resp.data.tasks));
         setIsLoading(false);
@@ -132,10 +121,7 @@ function Tasks() {
       return;
     }
     if (taskSelector.length <= 0) {
-      setIsNothing(true);
-      setTimeout(() => {
-        setIsNothing(false);
-      }, 3000);
+      displayToast("Please create at least 1 task to store!!!", "error");
     } else {
       setIsSaving(true);
       try {
@@ -169,6 +155,9 @@ function Tasks() {
       }
     }
   };
+  useEffect(() => {
+    dispatch(checkStatus());
+  }, [taskSelector]);
   return (
     <Box className={classes.root}>
       <Box>
@@ -176,24 +165,7 @@ function Tasks() {
           Tasks
         </Typography>
       </Box>
-      {isMultiSelect && (
-        <Notification
-          title="Alert Multi Selection"
-          message="Please select only 1 task per operation!!!"
-        />
-      )}
-      {isNothing && (
-        <Notification
-          title="Alert Nothing To Store"
-          message="Please create at least 1 task to store!!!"
-        />
-      )}
-      {noneIsSelected && (
-        <Notification
-          title="Alert None Selection"
-          message="Please select 1 task before!!!"
-        />
-      )}
+
       <Dialog
         open={isOpenAdd}
         onClose={handleCloseAdd}

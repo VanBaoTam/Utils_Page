@@ -100,7 +100,6 @@ function Timers() {
         path: "timers/load-content",
       });
       if (resp.status === 200) {
-        console.log(resp);
         displayToast(resp.data.message, "success");
         dispatch(loadTimersContents(resp.data.timers));
         setIsLoading(false);

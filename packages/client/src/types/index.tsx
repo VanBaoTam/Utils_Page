@@ -101,7 +101,6 @@ export type UpdatingFormProps = {
 };
 //COLS
 export const taskCols: GridColDef[] = [
-  { field: "id", headerName: "ID", width: 90 },
   {
     field: "name",
     headerName: "Task name",
@@ -135,7 +134,7 @@ export const taskCols: GridColDef[] = [
   {
     field: "description",
     headerName: "Description",
-    width: 350,
+    width: 430,
   },
   {
     field: "status",

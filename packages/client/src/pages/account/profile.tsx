@@ -9,7 +9,6 @@ import {
   Link,
 } from "@components/layout/mui-component";
 import { displayToast } from "@/utils/toast";
-import { useDispatch } from "react-redux";
 import { useDataProvider } from "@/hooks/useProvider";
 
 interface IProfile {
@@ -88,10 +87,8 @@ function Profile() {
                 label="Name"
                 fullWidth
                 type="text"
-                required
                 margin="normal"
                 {...register("name", {
-                  required: "Name is required",
                   minLength: {
                     value: 4,
                     message: "Name is too short",
@@ -113,10 +110,8 @@ function Profile() {
                 label="Password"
                 fullWidth
                 type="password"
-                required
                 autoComplete=""
                 {...register("password", {
-                  required: "Password is required",
                   minLength: {
                     value: 6,
                     message: "Password is too short",
@@ -139,11 +134,8 @@ function Profile() {
                 label="Confirm password"
                 fullWidth
                 type="password"
-                required
                 autoComplete=""
-                {...register("re_password", {
-                  required: "Confirm password is required",
-                })}
+                {...register("re_password", {})}
               />
               {errors.re_password && (
                 <Typography variant="body2" color="error">
