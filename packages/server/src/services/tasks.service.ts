@@ -45,9 +45,14 @@ export class TaskService {
           "You have nothing to load. "
         );
       }
-      return responseMessageInstance.getSuccess(res, 200, "FETCHED", {
-        tasks: tasksResult.rows,
-      });
+      return responseMessageInstance.getSuccess(
+        res,
+        200,
+        "Load datas successfully!",
+        {
+          tasks: tasksResult.rows,
+        }
+      );
     } catch (error) {
       console.error("[loadContent]: getError", error);
       return responseMessageInstance.getError(

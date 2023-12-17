@@ -34,7 +34,7 @@ import {
 import Logo from "@assets/Logo.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/Redux/hooks";
-import { logOut } from "@/slices/account";
+import account, { logOut } from "@/slices/account";
 import { displayToast } from "@/utils/toast";
 const drawerWidth = 240;
 type MainLayoutProps = {
@@ -160,6 +160,11 @@ export default function SideBar({ children }: MainLayoutProps) {
           </Typography>
           {auth && (
             <div>
+              {accountSelector.isLogged ? (
+                <Typography variant="body1" sx={{ display: "inline" }}>
+                  {sessionStorage.getItem("name")}
+                </Typography>
+              ) : null}
               <IconButton
                 size="large"
                 aria-label="account of current user"

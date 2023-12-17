@@ -49,9 +49,14 @@ export class CalendarService {
           "You have nothing to load. "
         );
       }
-      return responseMessageInstance.getSuccess(res, 200, "FETCHED", {
-        calendars: calendarsResult.rows,
-      });
+      return responseMessageInstance.getSuccess(
+        res,
+        200,
+        "Load datas successfully!",
+        {
+          calendars: calendarsResult.rows,
+        }
+      );
     } catch (error) {
       console.error("[loadContent]: getError", error);
       return responseMessageInstance.getError(

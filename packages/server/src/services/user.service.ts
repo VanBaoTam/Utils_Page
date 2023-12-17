@@ -67,7 +67,6 @@ export class UserService {
       }
       const data = {
         id: dataResult.rows[0].id,
-        name: dataResult.rows[0].name,
       };
 
       const token = jwt.sign(data, process.env.SECRET_KEY, {
@@ -79,6 +78,7 @@ export class UserService {
         "Login Successfully",
         {
           token: { value: token, type: "Bearer" },
+          name: dataResult.rows[0].name,
         }
       );
     } catch (error) {

@@ -145,6 +145,7 @@ function Calendars() {
           .add(formattedTime.hour(), "hour")
           .add(formattedTime.minute(), "minute")
       );
+      setTitle(calendar.name);
       setNotification(calendar.notification);
     }
   }, [calendar]);

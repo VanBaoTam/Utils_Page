@@ -45,9 +45,14 @@ export class NoteService {
           "You have nothing to load. "
         );
       }
-      return responseMessageInstance.getSuccess(res, 200, "FETCHED NOTES", {
-        notes: notesResult.rows,
-      });
+      return responseMessageInstance.getSuccess(
+        res,
+        200,
+        "Load datas successfully!",
+        {
+          notes: notesResult.rows,
+        }
+      );
     } catch (error) {
       console.error("[loadContent]: getError", error);
       return responseMessageInstance.getError(

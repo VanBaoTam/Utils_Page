@@ -34,8 +34,13 @@ function Login() {
         const resp = await provider.post({ path: "users/sign-in", body: data });
         if (resp.status === 200) {
           dispatch(login(data));
-          if (sessionStorage.getItem("Bearer"))
+          if (sessionStorage.getItem("Bearer")) {
             sessionStorage.removeItem("Bearer");
+          }
+          if (sessionStorage.getItem("name")) {
+            sessionStorage.removeItem("name");
+          }
+          sessionStorage.setItem("name", resp.data.name);
           sessionStorage.setItem(resp.data.token.type, resp.data.token.value);
           displayToast(resp.data.message, "success");
           setIsloading(false);

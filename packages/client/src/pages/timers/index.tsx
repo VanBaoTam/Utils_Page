@@ -159,7 +159,10 @@ function Timers() {
     if (timer) {
       const convertedTime = dayjs(timer.noting_time, "HH:mm");
       setNotingTime(convertedTime);
-      setDays(timer.choosen_days);
+      timer.choosen_days.forEach((element) => {
+        const day = element.trim();
+        handleDayToggle(day);
+      });
       setTitle(timer.title);
     }
   }, [timer]);
