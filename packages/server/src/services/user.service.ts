@@ -11,7 +11,6 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
 import { authPayload } from "../types";
-import emailjs from "emailjs-com";
 dotenv.config();
 //------------------------------------------------
 export class UserService {
@@ -94,17 +93,26 @@ export class UserService {
     const { username, password, name, email }: IRegister = req.body ?? {};
 
     if (!username || !password || !name || !email) {
-      return responseMessageInstance.getError(res, 400, "Invalid Credentials");
+      return responseMessageInstance.getError(
+        res,
+        400,
+        "Not Existed Credentials"
+      );
     }
 
-    const isValidCredentials =
-      CredentialsValidation(ETypeValidation.email, email) &&
-      CredentialsValidation(ETypeValidation.password, password) &&
-      CredentialsValidation(ETypeValidation.name, name) &&
-      CredentialsValidation(ETypeValidation.username, username);
+    if (!CredentialsValidation(ETypeValidation.email, email)) {
+      return responseMessageInstance.getError(res, 400, "Invalid Email");
+    }
+    if (!CredentialsValidation(ETypeValidation.password, password)) {
+      return responseMessageInstance.getError(res, 400, "Invalid Password");
+    }
 
-    if (!isValidCredentials) {
-      return responseMessageInstance.getError(res, 400, "Invalid Credentials");
+    if (!CredentialsValidation(ETypeValidation.name, name)) {
+      return responseMessageInstance.getError(res, 400, "Invalid Name");
+    }
+
+    if (!CredentialsValidation(ETypeValidation.username, username)) {
+      return responseMessageInstance.getError(res, 400, "Invalid Username");
     }
 
     try {
@@ -228,34 +236,87 @@ export class UserService {
       }
 
       const userId = userResult.rows[0].id;
-      const token = jwt.sign({ userId }, process.env.SECRET_KEY, {
-        expiresIn: "30m",
+      const id = jwt.sign({ userId }, process.env.SECRET_KEY, {
+        expiresIn: "5m",
       });
 
       const emailParams = {
         to_email: email,
         from_name: "Utils Page",
         to_name: userResult.rows[0].name,
-        message: `Click the following link to reset your password: http://localhost:5173/forgot-password/?token=${token}`,
+        message: `Click the following link to reset your password (This link will be expired in 5 minutes): http://localhost:5173/reset-password/${id}`,
         subject: "Password Reset Instructions",
         reply_to: email,
       };
 
-      await emailjs.send(
-        "service_30v0ikz",
-        "template_fi2wf3k",
-        emailParams,
-        "il9QG9B7XFL3sfpV0"
-      );
-
       return responseMessageInstance.getSuccess(
         res,
         200,
-        "Password reset instructions sent to your email!",
-        {}
+        "Password reset instructions is sending to your email!",
+        { emailParams }
       );
     } catch (error) {
       console.error("[forgotPassword]: getError", error);
+      return responseMessageInstance.getError(
+        res,
+        500,
+        "Internal Server Error"
+      );
+    }
+  }
+  async whoAmI(req: Request, res: Response) {
+    try {
+      const { id }: { id: string } = req.body ?? {};
+
+      if (!id) {
+        return responseMessageInstance.getError(res, 400, "Invalid Id");
+      }
+
+      let userId: number;
+      let decodedData: unknown;
+      try {
+        decodedData = await new Promise((resolve, reject) => {
+          jwt.verify(id, process.env.SECRET_KEY, (error, decoded) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(decoded);
+            }
+          });
+        });
+      } catch (error) {
+        if (error.name === "TokenExpiredError") {
+          return responseMessageInstance.getError(
+            res,
+            401,
+            "Token has expired"
+          );
+        } else {
+          throw error;
+        }
+      }
+
+      const payload = decodedData as authPayload;
+      if (!payload.userId || payload.userId <= 0) {
+        return responseMessageInstance.getError(res, 401, "Unauthorized!");
+      }
+      const userQuery = 'SELECT id, name FROM "User" WHERE id = $1';
+      const userValues = [payload.userId];
+      const userResult = await datasource.query(userQuery, userValues);
+
+      if (!userResult.rows.length) {
+        return responseMessageInstance.getError(
+          res,
+          400,
+          "Account does not exist!"
+        );
+      }
+
+      return responseMessageInstance.getSuccess(res, 200, "Validated!", {
+        id: payload.userId,
+      });
+    } catch (error) {
+      console.error("[whoAmI]: getError", error);
       return responseMessageInstance.getError(
         res,
         500,

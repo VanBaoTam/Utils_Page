@@ -19,6 +19,8 @@ import { store } from "./Redux/store";
 import ProtectedRoutes from "./routes/protected-routes";
 import Profile from "./pages/account/profile";
 import LoggedRoutes from "./routes/logged-routes";
+import ForgotPassword from "./pages/account/forgot-password";
+import ResetPassword from "./pages/account/reset-password";
 
 declare module "@mui/material/styles" {
   interface Theme {
@@ -61,6 +63,22 @@ function App() {
                     <LoggedRoutes>
                       <Profile />
                     </LoggedRoutes>
+                  }
+                />
+                <Route
+                  path="/forgot-password"
+                  element={
+                    <ProtectedRoutes>
+                      <ForgotPassword />
+                    </ProtectedRoutes>
+                  }
+                />
+                <Route
+                  path="/reset-password/:id"
+                  element={
+                    <ProtectedRoutes>
+                      <ResetPassword />
+                    </ProtectedRoutes>
                   }
                 />
                 <Route path="/notes" element={<Notes />} />

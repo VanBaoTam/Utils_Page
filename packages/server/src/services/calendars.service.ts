@@ -109,14 +109,6 @@ export class CalendarService {
       );
 
       for (const calendar of data) {
-        // if (dayjs(calendar.choosen_date).toISOString() < new Date()) {
-        //   return responseMessageInstance.getError(
-        //     res,
-        //     400,
-        //     "Invalid date for calendar: " + calendar.name
-        //   );
-        // }
-
         const existingCalendarIndex = existingCalendarsResult.rows.findIndex(
           (existingCalendar) => existingCalendar.id === calendar.id
         );

@@ -152,14 +152,6 @@ function Profile() {
             >
               Update Profile
             </Button>
-            <Typography variant="body1" sx={{ marginTop: "5px" }}>
-              <Link
-                href="/logout"
-                style={{ textDecoration: "under", color: "black" }}
-              >
-                <Button variant="text">Logout</Button>
-              </Link>
-            </Typography>
           </Box>
         </form>
       </Container>

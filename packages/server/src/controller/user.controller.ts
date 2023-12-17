@@ -29,6 +29,9 @@ export class UserController {
   async updatePassword(req: Request, res: Response) {
     return await userServiceInstance.updatePassword(req, res);
   }
+  async whoAmI(req: Request, res: Response) {
+    return await userServiceInstance.whoAmI(req, res);
+  }
 }
 
 //------------------------------------------------
