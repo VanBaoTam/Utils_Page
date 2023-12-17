@@ -7,7 +7,7 @@ const timerSlice = createSlice({
   initialState,
   reducers: {
     createTimer: (state, action: PayloadAction<TTimers>) => {
-      state.push(action.payload);
+      if (action.payload !== null) state.push(action.payload);
     },
     updateTimer: (state, action: PayloadAction<TTimers>) => {
       const updatedTimer = action.payload;

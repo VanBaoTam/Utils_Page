@@ -7,7 +7,7 @@ const calendarSlice = createSlice({
   initialState,
   reducers: {
     createCalendar: (state, action: PayloadAction<TCalendars>) => {
-      state.push(action.payload);
+      if (action.payload !== null) state.push(action.payload);
     },
     updateCalendar: (state, action: PayloadAction<TCalendars>) => {
       const updatedCalendar = action.payload;

@@ -8,7 +8,7 @@ const noteSlice = createSlice({
   initialState,
   reducers: {
     createNote: (state, action: PayloadAction<TNote>) => {
-      state.push(action.payload);
+      if (action.payload !== null) state.push(action.payload);
     },
     updateNote: (state, action: PayloadAction<TNote>) => {
       const updatedNote = action.payload;

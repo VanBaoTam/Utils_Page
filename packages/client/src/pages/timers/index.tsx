@@ -97,7 +97,7 @@ function Timers() {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        path: "notes/load-content",
+        path: "timers/load-content",
       });
       if (resp.status === 200) {
         console.log(resp);

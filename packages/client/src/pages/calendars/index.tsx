@@ -29,11 +29,12 @@ function Calendars() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [notingTime, setNotingTime] = useState<Dayjs>(dayjs());
   const [notification, setNotification] = useState<string>("Unknown");
-
+  const [title, setTitle] = useState<string>("Untitled");
   const handleCreateCalendar = () => {
     const newCalendar: TCalendars = {
       id: calendarSelector.length + 1,
       user_id: 1,
+      name: "Untitled",
       choosen_date: dayjs().format("DD / MM / YYYY"),
       notification: "Unknown",
       noting_time: dayjs().format("HH:mm"),
@@ -45,8 +46,9 @@ function Calendars() {
     const updatedCalendar: TCalendars = {
       id: calendar?.id || 1,
       user_id: calendar?.user_id || 1,
+      name: title || "Untitled",
       choosen_date: notingTime.format("DD / MM / YYYY"),
-      notification: notification,
+      notification: notification || "Unknown",
       noting_time: notingTime.format("HH:mm"),
     };
     dispatch(updateCalendar(updatedCalendar));
@@ -76,7 +78,7 @@ function Calendars() {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        path: "notes/load-content",
+        path: "calendars/load-content",
       });
       if (resp.status === 200) {
         console.log(resp);
@@ -118,7 +120,7 @@ function Calendars() {
             Authorization: `Bearer ${token}`,
           },
           path: "calendars/save-content",
-          body: { data: calendar },
+          body: { data: calendarSelector },
         });
         if (resp.status === 200) {
           displayToast(resp.data.message, "success");
@@ -227,11 +229,30 @@ function Calendars() {
                 borderBottom: "2px solid gray",
               }}
             >
-              <Box sx={{ display: "flex", flexFlow: "column", width: "100%" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexFlow: "column",
+                  width: "100%",
+                  maxWidth: "15rem",
+                }}
+              >
                 <Typography
                   variant="inherit"
                   sx={{
+                    flexGrow: 1,
                     fontWeight: "bold",
+                    display: "inline-block",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {element.name}
+                </Typography>
+                <Typography
+                  variant="inherit"
+                  sx={{
                     flexGrow: 1,
                     display: "inline-block",
                     overflow: "hidden",
@@ -239,14 +260,14 @@ function Calendars() {
                     whiteSpace: "nowrap",
                   }}
                 >
+                  Days:{" "}
                   {dayjs(element.choosen_date, "DD / MM / YYYY").format(
-                    "DD / MM / YYYY"
+                    "DD/MM/YYYY"
                   )}
                 </Typography>
                 <Typography
                   variant="inherit"
                   sx={{
-                    fontWeight: "bold",
                     flexGrow: 1,
                     display: "inline-block",
                     overflow: "hidden",
@@ -266,7 +287,7 @@ function Calendars() {
                     whiteSpace: "nowrap",
                   }}
                 >
-                  {element.notification}
+                  Notification: {element.notification}
                 </Typography>
               </Box>
               <Button
@@ -290,13 +311,30 @@ function Calendars() {
         </Box>
       </Grid>
       <Grid item xs={9} sx={{ height: "100%", p: 1, pl: 3 }}>
-        <Box sx={{ height: "100%", p: 2 }}>
+        <Box
+          sx={{
+            height: "100%",
+
+            display: "flex",
+            flexFlow: "column",
+            width: "38rem",
+          }}
+        >
           {calendar && (
             <React.Fragment>
-              <Typography variant="h6">Selected Timer:</Typography>
+              <Typography variant="h6">Selected Days:</Typography>
               <br />
+              <TextField
+                sx={{ minWidth: "32rem" }}
+                label="Title"
+                variant="outlined"
+                value={title}
+                onChange={(event) => {
+                  setTitle(event.target.value);
+                }}
+              />
               <MobileDateTimePicker
-                sx={{ m: 1 }}
+                sx={{ my: 3 }}
                 label="Choosen Date Time:"
                 minDateTime={dayjs().subtract(3, "minute") as any}
                 value={notingTime as any}
@@ -306,9 +344,9 @@ function Calendars() {
                   }
                 }}
               />
-              <Box sx={{ m: 1, py: 2 }}>
+              <Box>
                 <TextField
-                  sx={{ minWidth: "32rem" }}
+                  sx={{ minWidth: "38rem" }}
                   label="Notification"
                   variant="outlined"
                   value={notification}

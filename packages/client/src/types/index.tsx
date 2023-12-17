@@ -80,6 +80,7 @@ export type TNote = {
 export type TCalendars = {
   id: number;
   user_id: number;
+  name: string;
   choosen_date: string;
   noting_time: string;
   notification: string;

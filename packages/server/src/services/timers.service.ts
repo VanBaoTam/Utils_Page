@@ -60,6 +60,7 @@ export class TimerService {
 
   async saveContent(req: Request, res: Response) {
     const { data } = req.body ?? {};
+
     const authorizationHeader = req.headers["authorization"] ?? "";
     const token = authorizationHeader.split(" ")[1];
     let id: number;
@@ -100,9 +101,6 @@ export class TimerService {
       );
 
       for (const timer of data) {
-        const notingTime = new Date(timer.noting_time);
-        const ISOnotingTime = notingTime.toISOString();
-
         const existingTimerIndex = existingTimersResult.rows.findIndex(
           (existingTimer) => existingTimer.id === timer.id
         );
@@ -115,7 +113,7 @@ export class TimerService {
             timer.choosen_days,
             timer.repeater,
             timer.title,
-            ISOnotingTime,
+            timer.noting_time,
           ];
           await datasource.query(updateTimerQuery, updateTimerValues);
         } else {
@@ -126,7 +124,7 @@ export class TimerService {
             timer.choosen_days,
             timer.repeater,
             timer.title,
-            ISOnotingTime,
+            timer.noting_time,
           ];
           await datasource.query(insertTimerQuery, insertTimerValues);
         }

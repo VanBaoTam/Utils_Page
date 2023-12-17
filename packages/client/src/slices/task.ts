@@ -16,8 +16,10 @@ const taskSlice = createSlice({
   initialState,
   reducers: {
     createTask: (state, action: PayloadAction<TTask>) => {
-      state.ids++;
-      state.list.push(action.payload);
+      if (action.payload !== null) {
+        state.ids++;
+        state.list.push(action.payload);
+      }
     },
     updateTask: (state, action: PayloadAction<TTask>) => {
       const updatedTask = action.payload;

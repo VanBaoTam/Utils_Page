@@ -4,6 +4,7 @@ import { responseMessageInstance } from "../utils";
 import { authPayload } from "../types";
 import jwt from "jsonwebtoken";
 import { datasource } from "../datasource";
+import dayjs from "dayjs";
 dotenv.config();
 
 //------------------------------------------------
@@ -63,6 +64,7 @@ export class CalendarService {
 
   async saveContent(req: Request, res: Response) {
     const { data } = req.body ?? {};
+    console.log(data);
     const authorizationHeader = req.headers["authorization"] ?? "";
     const token = authorizationHeader.split(" ")[1];
     let id: number;
@@ -103,18 +105,13 @@ export class CalendarService {
       );
 
       for (const calendar of data) {
-        const choosenDate = new Date(calendar.choosen_date);
-        const ISOchoosenDate = choosenDate.toISOString();
-        const notingTime = new Date(calendar.noting_time);
-        const ISOnotingTime = notingTime.toISOString();
-
-        if (choosenDate < new Date()) {
-          return responseMessageInstance.getError(
-            res,
-            400,
-            "Invalid date for calendar: " + calendar.name
-          );
-        }
+        // if (dayjs(calendar.choosen_date).toISOString() < new Date()) {
+        //   return responseMessageInstance.getError(
+        //     res,
+        //     400,
+        //     "Invalid date for calendar: " + calendar.name
+        //   );
+        // }
 
         const existingCalendarIndex = existingCalendarsResult.rows.findIndex(
           (existingCalendar) => existingCalendar.id === calendar.id
@@ -126,9 +123,9 @@ export class CalendarService {
           const updateCalendarValues = [
             existingCalendarsResult.rows[existingCalendarIndex].id,
             calendar.name,
-            ISOchoosenDate,
+            calendar.choosen_date,
             calendar.notification,
-            ISOnotingTime,
+            calendar.noting_time,
           ];
           await datasource.query(updateCalendarQuery, updateCalendarValues);
         } else {
@@ -137,9 +134,9 @@ export class CalendarService {
           const insertCalendarValues = [
             id,
             calendar.name,
-            ISOchoosenDate,
+            calendar.choosen_date,
             calendar.notification,
-            ISOnotingTime,
+            calendar.noting_time,
           ];
           await datasource.query(insertCalendarQuery, insertCalendarValues);
         }
