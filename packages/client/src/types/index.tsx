@@ -1,5 +1,6 @@
 import { getTaskStatusColor } from "@/utils/color";
 import { GridColDef } from "@mui/x-data-grid";
+import dayjs from "dayjs";
 
 export enum EUserStatus {
   active = "activated",
@@ -110,7 +111,7 @@ export const taskCols: GridColDef[] = [
     headerName: "Started Date",
     type: "date",
     valueFormatter: ({ value }: { value: string }) =>
-      value ? new Date(value).toLocaleDateString() : "",
+      value ? dayjs(value).format("DD/MM/YYYY HH:mm") : "",
     width: 170,
   },
   {
@@ -118,7 +119,7 @@ export const taskCols: GridColDef[] = [
     headerName: "Noting Date",
     type: "date",
     valueFormatter: ({ value }: { value: string }) =>
-      value ? new Date(value).toLocaleDateString() : "",
+      value ? dayjs(value).format("DD/MM/YYYY HH:mm") : "",
     width: 170,
   },
   {
@@ -126,7 +127,7 @@ export const taskCols: GridColDef[] = [
     headerName: "Finished Date",
     type: "date",
     valueFormatter: ({ value }: { value: string }) =>
-      value ? new Date(value).toLocaleDateString() : "",
+      value ? dayjs(value).format("DD/MM/YYYY HH:mm") : "",
     width: 170,
   },
 

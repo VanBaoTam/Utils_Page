@@ -100,7 +100,7 @@ function Tasks() {
           "Invalid account's credentials, please log in again!",
           "error"
         );
-        setIsSaving(false);
+        setIsLoading(false);
         return;
       }
       const resp = await provider.get({
@@ -112,16 +112,16 @@ function Tasks() {
       if (resp.status === 200) {
         console.log(resp);
         displayToast(resp.data.message, "success");
-        dispatch(loadTaskContents(resp.data));
-        setIsSaving(false);
+        dispatch(loadTaskContents(resp.data.tasks));
+        setIsLoading(false);
       } else {
         displayToast(resp.data, "error");
-        setIsSaving(false);
+        setIsLoading(false);
       }
     } catch (error: any) {
       console.log(error.response.data.error);
       displayToast(error.response.data.error, "error");
-      setIsSaving(false);
+      setIsLoading(false);
     }
   };
 
