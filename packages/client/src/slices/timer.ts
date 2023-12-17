@@ -25,7 +25,8 @@ const timerSlice = createSlice({
       }
     },
     loadTimersContents: (state, action: PayloadAction<TTimers[]>) => {
-      state = action.payload;
+      state.length = 0;
+      state.push(...action.payload);
     },
   },
 });

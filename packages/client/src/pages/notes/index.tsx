@@ -5,7 +5,7 @@ import {
   TextField,
   Typography,
 } from "@components/layout/mui-component";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { TNote } from "@/types";
 import { useAppDispatch, useAppSelector } from "@/Redux/hooks";
 import {
@@ -26,6 +26,8 @@ function Notes() {
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const [note, setNote] = useState<TNote | undefined>(undefined);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const handleTextareaChange = (event: any) => {
     setContent(event.target.value);
   };
@@ -140,12 +142,52 @@ function Notes() {
       }
     }
   };
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      setSelectedFile(files[0]);
+    }
+  };
+  const handleLogContent = () => {
+    if (selectedFile) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const content = e.target?.result as string;
+        const fileName = selectedFile.name;
+        const newNote: TNote = {
+          id: noteSelector.length + 1,
+          user_id: 1,
+          updated_date: new Date(),
+          status: 1,
+          content: content,
+          name: fileName,
+        };
+        dispatch(createNote(newNote));
+        setNote(newNote);
+      };
+      reader.readAsText(selectedFile);
+    } else {
+      displayToast("Please select a file first.", "info");
+    }
+  };
+
+  const handleUploadNote = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
   useEffect(() => {
     if (note) {
       setContent(note?.content || "");
       setName(note?.name || "Untitled");
     }
   }, [note]);
+  useEffect(() => {
+    if (!selectedFile) {
+      return;
+    }
+    handleLogContent();
+  }, [selectedFile]);
   return (
     <Grid container sx={{ height: "100%" }}>
       <Grid item xs={3} sx={{ height: "100%" }}>
@@ -154,7 +196,7 @@ function Notes() {
             display: "flex",
             alignItems: "center",
             paddingLeft: 2,
-            paddingRight: 4,
+            paddingRight: 0,
             paddingBottom: 2,
             borderBottom: "2px solid #eee",
           }}
@@ -165,13 +207,33 @@ function Notes() {
           >
             NOTES
           </Typography>
-          <Button
-            variant="contained"
-            onClick={handleCreateNote}
-            sx={{ marginLeft: "1rem" }}
-          >
-            ADD
-          </Button>
+          <Box>
+            <Button
+              variant="contained"
+              onClick={handleCreateNote}
+              sx={{
+                marginLeft: "1rem",
+                width: "5.75rem",
+                marginBottom: "1rem",
+              }}
+            >
+              ADD
+            </Button>{" "}
+            <input
+              type="file"
+              onChange={handleFileChange}
+              accept=".txt"
+              ref={fileInputRef}
+              style={{ display: "none" }}
+            />
+            <Button
+              variant="contained"
+              onClick={handleUploadNote}
+              sx={{ marginLeft: "1rem" }}
+            >
+              UPLOAD
+            </Button>
+          </Box>
           <Box sx={{ paddingLeft: "1rem" }}>
             <Button
               disabled={isLoading}

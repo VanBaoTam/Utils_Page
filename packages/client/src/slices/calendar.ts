@@ -29,7 +29,8 @@ const calendarSlice = createSlice({
       }
     },
     loadCalendarsContents: (state, action: PayloadAction<TCalendars[]>) => {
-      state = action.payload;
+      state.length = 0;
+      state.push(...action.payload);
     },
   },
 });

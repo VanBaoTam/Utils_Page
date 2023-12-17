@@ -26,7 +26,8 @@ const noteSlice = createSlice({
       }
     },
     loadNoteContents: (state, action: PayloadAction<TNote[]>) => {
-      state = action.payload;
+      state.length = 0;
+      state.push(...action.payload);
     },
   },
 });

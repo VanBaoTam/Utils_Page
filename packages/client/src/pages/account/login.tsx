@@ -39,9 +39,6 @@ function Login() {
           sessionStorage.setItem(resp.data.token.type, resp.data.token.value);
           displayToast(resp.data.message, "success");
           setIsloading(false);
-          setTimeout(() => {
-            navigate("/");
-          }, 3000);
         } else {
           displayToast(resp.data, "error");
           setIsloading(false);
