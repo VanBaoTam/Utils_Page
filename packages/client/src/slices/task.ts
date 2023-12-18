@@ -53,9 +53,14 @@ const taskSlice = createSlice({
     },
     checkNotifTime: (state) => {
       state.list.forEach((element) => {
-        if (element.isNotified) return;
-        if (element.status === ETasksStatus.finished) return;
-        if (dayjs(element.noting_date).toDate() <= new Date()) {
+        if (element.isNotified || element.status === ETasksStatus.finished)
+          return;
+        if (dayjs(element.finished_date).toDate() >= new Date()) {
+          displayToastPernament(`Task ${element.name} is expired`, "error");
+          element.isNotified = true;
+          return;
+        }
+        if (dayjs(element.noting_date).toDate() >= new Date()) {
           displayToastPernament(
             `Task ${element.name} is at the noting time`,
             "warning"
