@@ -38,6 +38,7 @@ const calendarSlice = createSlice({
       const currentDate = new Date();
       const currentPlus5Minutes = dayjs(currentDate).add(5, "minutes").toDate();
       state.forEach((element) => {
+        if (element.isNotified) return;
         const [day, month, year] = element.choosen_date
           .split("/")
           .map((part) => parseInt(part.trim(), 10));
@@ -52,6 +53,7 @@ const calendarSlice = createSlice({
             `NOTE FOR DAYS ${element.name} is at the noting time`,
             "warning"
           );
+          element.isNotified = true;
         }
       });
     },

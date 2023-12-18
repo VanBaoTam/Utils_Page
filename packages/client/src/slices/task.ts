@@ -1,7 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { ETasksStatus, TTask } from "@/types";
 import dayjs from "dayjs";
-import { displayToast, displayToastPernament } from "@/utils/toast";
+import { displayToastPernament } from "@/utils/toast";
 
 interface TaskState {
   ids: number;
@@ -52,12 +52,14 @@ const taskSlice = createSlice({
     },
     checkNotifTime: (state) => {
       state.list.forEach((element) => {
+        if (element.isNotified) return;
         if (element.status === ETasksStatus.finished) return;
         if (dayjs(element.noting_date).toDate() <= new Date()) {
           displayToastPernament(
             `Task ${element.name} is at the noting time`,
             "warning"
           );
+          element.isNotified = true;
           return;
         }
       });

@@ -34,8 +34,8 @@ const timerSlice = createSlice({
       const currentDay = new Date().getDay();
       const currentHour = new Date().getHours();
       const currentMinute = new Date().getMinutes();
-      console.log("RUNNING TIMERS");
       state.forEach((element) => {
+        if (element.isNotified) return;
         const choosenDays = element.choosen_days.map((day) => day.trim());
 
         if (!choosenDays.includes(DAYS[currentDay])) return;
@@ -53,6 +53,7 @@ const timerSlice = createSlice({
           `TIMER ${element.title} is at the noting time`,
           "warning"
         );
+        element.isNotified = true;
       });
     },
   },
