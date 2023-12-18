@@ -18,6 +18,7 @@ const calendarSlice = createSlice({
       );
       if (index !== -1) {
         state[index] = updatedCalendar;
+        state[index].isNotified = false;
       }
     },
     deleteCalendar: (state, action: PayloadAction<number>) => {

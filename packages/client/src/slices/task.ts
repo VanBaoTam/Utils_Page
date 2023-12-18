@@ -28,6 +28,7 @@ const taskSlice = createSlice({
       const index = state.list.findIndex((task) => task.id === updatedTask.id);
       if (index !== -1) {
         state.list[index] = updatedTask;
+        state.list[index].isNotified = false;
       }
     },
     deleteTask: (state, action: PayloadAction<number>) => {

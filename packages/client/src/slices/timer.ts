@@ -16,6 +16,7 @@ const timerSlice = createSlice({
       const index = state.findIndex((timer) => timer.id === updatedTimer.id);
       if (index !== -1) {
         state[index] = updatedTimer;
+        state[index].isNotified = false;
       }
     },
     deleteTimer: (state, action: PayloadAction<number>) => {
