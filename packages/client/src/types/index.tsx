@@ -68,7 +68,7 @@ export type TTask = {
   finished_date: Date;
   status: ETasksStatus;
   description: string;
-  isNotified: boolean;
+  isNotified?: boolean | undefined;
 };
 export type TNote = {
   id: number;
@@ -85,7 +85,7 @@ export type TCalendars = {
   choosen_date: string;
   noting_time: string;
   notification: string;
-  isNotified: boolean;
+  isNotified?: boolean;
 };
 
 export type TTimers = {
@@ -95,7 +95,7 @@ export type TTimers = {
   noting_time: string;
   repeater: ETimerStatus;
   title: string;
-  isNotified: boolean;
+  isNotified?: boolean;
 };
 export type UpdatingFormProps = {
   selectedId: number;

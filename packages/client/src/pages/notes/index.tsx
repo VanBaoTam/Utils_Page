@@ -144,7 +144,14 @@ function Notes() {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files && files.length > 0) {
-      setSelectedFile(files[0]);
+      const selectedFileType = files[0].type;
+
+      if (selectedFileType === "text/plain") {
+        setSelectedFile(files[0]);
+      } else {
+        displayToast("Please select a text file (.txt) only.", "error");
+        event.target.value = "";
+      }
     }
   };
   const handleLogContent = () => {

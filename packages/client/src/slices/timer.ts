@@ -51,7 +51,7 @@ const timerSlice = createSlice({
         }
 
         displayToastPernament(
-          `TIMER ${element.title} is at the noting time`,
+          `TIMER ${element.title} is at the noting time or is over`,
           "warning"
         );
         element.isNotified = true;

@@ -51,7 +51,7 @@ const calendarSlice = createSlice({
           dayjs(eleDate).isBefore(currentPlus5Minutes)
         ) {
           displayToastPernament(
-            `NOTE FOR DAYS ${element.name} is at the noting time`,
+            `NOTE FOR DAYS ${element.name} is at the noting time or is over`,
             "warning"
           );
           element.isNotified = true;
