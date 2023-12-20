@@ -95,7 +95,7 @@ export type TTimers = {
   noting_time: string;
   repeater: ETimerStatus;
   title: string;
-  isNotified?: boolean;
+  isNotified?: boolean | number;
 };
 export type UpdatingFormProps = {
   selectedId: number;
