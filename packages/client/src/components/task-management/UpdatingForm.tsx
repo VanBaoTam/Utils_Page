@@ -99,6 +99,7 @@ function UpdatingForm(props: UpdatingFormProps) {
       finished_date: finishedDate,
     };
     dispatch(updateTask(updatedTask));
+    displayToast("Update Task successfully!", "success");
     handleClose();
   };
 

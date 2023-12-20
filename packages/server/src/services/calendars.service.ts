@@ -52,7 +52,7 @@ export class CalendarService {
       return responseMessageInstance.getSuccess(
         res,
         200,
-        "Load datas successfully!",
+        "Load datasuccessfully!",
         {
           calendars: calendarsResult.rows,
         }

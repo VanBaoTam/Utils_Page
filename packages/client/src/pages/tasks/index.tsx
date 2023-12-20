@@ -60,6 +60,7 @@ function Tasks() {
           setUpdate(true);
         } else {
           dispatch(deleteTask(ids[0]));
+          displayToast("Delete task successfully", "success");
         }
       } else if (ids.length > 1) {
         displayToast("Please select only 1 task per operation!!!", "error");

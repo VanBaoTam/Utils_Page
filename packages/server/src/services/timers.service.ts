@@ -48,7 +48,7 @@ export class TimerService {
       return responseMessageInstance.getSuccess(
         res,
         200,
-        "Load datas successfully!",
+        "Load datasuccessfully!",
         {
           timers: timersResult.rows,
         }

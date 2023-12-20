@@ -48,7 +48,7 @@ export class TaskService {
       return responseMessageInstance.getSuccess(
         res,
         200,
-        "Load datas successfully!",
+        "Load datasuccessfully!",
         {
           tasks: tasksResult.rows,
         }

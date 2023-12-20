@@ -17,7 +17,7 @@ function MainLayout({ children }: MainLayoutProps) {
       dispatch(checkNotifTime());
       dispatch(checkNotifTimer());
       dispatch(checkNotifCalendar());
-    }, 30000);
+    }, 10000);
 
     return () => clearInterval(intervalId);
   }, [dispatch]);
